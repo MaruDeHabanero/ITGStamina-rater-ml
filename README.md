@@ -4,6 +4,10 @@ Un enfoque de Machine Learning para clasificar la dificultad de los charts de st
 
 Este proyecto forma parte de mi trabajo de tesina para la carrera de Ingeniería en Computación Inteligente. El objetivo es transformar la evaluación subjetiva de la comunidad en un modelo objetivo y escalable.
 
+## Estructura del Proyecto
+- **ml-core/**: Entorno Python para ciencia de datos, lógica de parsing y entrenamiento de modelos.
+- **web-app/**: Aplicación React para inferencia en el navegador usando ONNX.
+
 ### Características Principales
 
 - Ingeniería de Características: Extracción de métricas avanzadas (intensidad, pacing, longitud de streams) a partir de la Breakdown Notation.
@@ -28,6 +32,11 @@ Como estudiante de Ingeniería en Computación Inteligente, mi enfoque principal
 A Machine Learning approach to classify the difficulty of In The Groove (ITG) stamina charts using structural features extracted from Breakdown Notation.
 
 This project is developed as part of my undergraduate thesis for Intelligent Computer Engineering. The goal is to bridge the gap between subjective community ratings and an objective, scalable predictive model.
+
+## Project Structure
+- **ml-core/**: Python environment for Data Science, parser logic, and model training.
+- **web-app/**: React application for browser-based inference using ONNX.
+
 ### Features
 
 - Feature Engineering: Advanced metric extraction (intensity, pacing, stream length) based on Breakdown Notation.

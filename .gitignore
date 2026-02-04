@@ -1,56 +1,22 @@
-# --- Python ---
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# --- envs ---
-.venv/
-venv/
-env/
-bin/
-ENV/
-
-# --- Jupyter Notebooks ---
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
-
-# --- Datos y Datasets ---
-data/raw/
-data/processed/
-*.csv
-*.json
-*.sm
-*.ssc
-
-# --- Modelos Guardados ---
-*.pkl
-*.joblib
-*.h5
-*.models
-
-# --- IDEs y Editores ---
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# --- Sistema Operativo ---
+# === GLOBAL ===
 .DS_Store
 Thumbs.db
+
+# === PYTHON (ml-core) ===
+ml-core/venv/
+ml-core/.venv/
+ml-core/__pycache__/
+ml-core/data/raw/
+ml-core/data/processed/
+*.pyc
+
+# === NODE JS (web-app) ===
+web-app/node_modules/
+web-app/dist/
+web-app/.env
+npm-debug.log
+yarn-error.log
+
+# === MODELS ===
+# *.onnx
+# *.pkl
