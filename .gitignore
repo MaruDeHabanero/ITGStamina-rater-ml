@@ -1,6 +1,7 @@
 # === GLOBAL ===
 .DS_Store
 Thumbs.db
+.vscode/
 
 # === PYTHON (ml-core) ===
 ml-core/venv/
