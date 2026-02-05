@@ -43,7 +43,7 @@ Respect the strict boundaries between the two environments:
 2. **Type Hinting:** Use Python type hints (e.g., `def parse_chart(path: Path) -> dict:`) for all functions.
 3. **Paths:** Always use `pathlib.Path`. Do not hardcode absolute paths.
 4. **Centralized Logic:** Do not write complex parsing logic inside Jupyter Notebooks. Write it in `ml-core/src/parser.py` and import it into the notebook.
-5. **English Code:** Variable names, comments, and commits must be in English.
+5. **English Code, Bilingual documentation:** Variables and functions must be named in English. Comments and docstrings MUST be in Spanish and English for bilingual clarity and academic rigor.
 6. **Reproducibility:** Dependencies are managed in `ml-core/requirements.txt`.
 
 ## ⚠️ "Vibe-Coding" & Hygiene
