@@ -3,12 +3,15 @@ from __future__ import annotations
 from pathlib import Path
 from pprint import pprint
 from statistics import mean
-from typing import Dict, List
+from typing import Dict, List, Optional
+
+STREAM_THRESHOLD = 16
 
 StreamSegment = Dict[str, int | bool]
 
-
-def get_stream_sequences(notes_per_measure: List[int], threshold: int = 16) -> List[StreamSegment]:
+def get_stream_sequences(
+    notes_per_measure: List[int], subdivision: Optional[int] = None
+) -> List[StreamSegment]:
     """ES: Identifica rangos contiguos de stream y break según un umbral de notas.
 
     Replica el helper `GetStreamSequences` de Simply Love con índices 0-based.
@@ -25,14 +28,16 @@ def get_stream_sequences(notes_per_measure: List[int], threshold: int = 16) -> L
 
     Args:
         notes_per_measure: Note counts per measure from the parser.
-        threshold: Minimum notes-per-measure to treat as a stream measure.
+        subdivision: Detected rows-per-measure grid (optional; not used to scale threshold).
 
     Returns:
         List of segments, each as a dict with keys: `start` (inclusive), `end`
         (inclusive), `is_break`, and `length` (number of measures in the segment).
     """
 
-    stream_measures = [i for i, n in enumerate(notes_per_measure) if n >= threshold]
+    eff_threshold = STREAM_THRESHOLD  # Fixed cultural threshold for streams.
+
+    stream_measures = [i for i, n in enumerate(notes_per_measure) if n >= eff_threshold]
     if not stream_measures:
         return []
 
@@ -89,10 +94,20 @@ def get_stream_sequences(notes_per_measure: List[int], threshold: int = 16) -> L
         counter = 1
         stream_end = None
 
+    # Remove a leading break: the chart starts at the first stream.
+    if stream_sequences and stream_sequences[0]["is_break"]:
+        stream_sequences = stream_sequences[1:]
+
+    # Remove a trailing break: ignore padding after the last stream.
+    if stream_sequences and stream_sequences[-1]["is_break"]:
+        stream_sequences = stream_sequences[:-1]
+
     return stream_sequences
 
 
-def calculate_breakdown_metrics(notes_per_measure: List[int]) -> Dict[str, float | int]:
+def calculate_breakdown_metrics(
+    notes_per_measure: List[int], subdivision: Optional[int] = None
+) -> Dict[str, float | int]:
     """ES: Calcula métricas resumen a partir de la densidad de notas por compás.
 
     EN: Compute summary metrics from per-measure note densities, mirroring the Lua
@@ -106,7 +121,7 @@ def calculate_breakdown_metrics(notes_per_measure: List[int]) -> Dict[str, float
         `max_stream_length`, `break_count`, `stream_break_ratio`, y `average_nps`.
     """
 
-    sequences = get_stream_sequences(notes_per_measure, threshold=16)
+    sequences = get_stream_sequences(notes_per_measure, subdivision=subdivision)
 
     total_stream_length = sum(seg["length"] for seg in sequences if not seg["is_break"])
     total_break_length = sum(seg["length"] for seg in sequences if seg["is_break"])
@@ -128,7 +143,9 @@ def calculate_breakdown_metrics(notes_per_measure: List[int]) -> Dict[str, float
     }
 
 
-def generate_breakdown_string(notes_per_measure: List[int], threshold: int = 16) -> str:
+def generate_breakdown_string(
+    notes_per_measure: List[int], subdivision: Optional[int] = None
+) -> str:
     """ES: Genera una cadena compacta de breakdown usando segmentos stream/break.
 
     Los streams se muestran como su longitud en compases y los breaks entre
@@ -149,7 +166,7 @@ def generate_breakdown_string(notes_per_measure: List[int], threshold: int = 16)
         A single-line human-readable breakdown string.
     """
 
-    segments = get_stream_sequences(notes_per_measure, threshold=threshold)
+    segments = get_stream_sequences(notes_per_measure, subdivision=subdivision)
     if not segments:
         return "No streams detected"
 
@@ -163,13 +180,13 @@ def generate_breakdown_string(notes_per_measure: List[int], threshold: int = 16)
 
 
 if __name__ == "__main__":
-    dummy_path = Path("ml-core/data/raw/Stamina RPG 6/[19] lovism/lovism.sm")
+    dummy_path = Path("ml-core/data/raw/Stamina RPG 6/[26] Stratospheric Intricacy/stratospheric.sm")
     try:
-        from parser import parse_sm_chart
+        from parser import parse_sm_chart_with_meta
 
-        densities = parse_sm_chart(dummy_path)
+        densities, subdivision = parse_sm_chart_with_meta(dummy_path)
         print("Stream sequences:")
-        seqs = get_stream_sequences(densities)
+        seqs = get_stream_sequences(densities, subdivision=subdivision)
         formatted_sequences = [
             {
                 "length": seg["length"],
@@ -181,8 +198,8 @@ if __name__ == "__main__":
         ]
         pprint(formatted_sequences, sort_dicts=False)
         print("\nMetrics:")
-        pprint(calculate_breakdown_metrics(densities))
+        pprint(calculate_breakdown_metrics(densities, subdivision=subdivision))
         print("\nBreakdown string:")
-        print(generate_breakdown_string(densities))
+        print(generate_breakdown_string(densities, subdivision=subdivision))
     except Exception as exc:  # noqa: BLE001 - CLI helper only
         print(f"Failed to compute features: {exc}")

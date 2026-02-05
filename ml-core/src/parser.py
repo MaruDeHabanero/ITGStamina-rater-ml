@@ -1,11 +1,21 @@
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
-from typing import List, Sequence
+from typing import List, Sequence, Tuple
 
 _NOTE_SYMBOLS = {"0", "1", "2", "3", "4", "M"}
 _NOTE_HEADS = {"1", "2", "4"}
 _DIFFICULTY_PRIORITY = {"challenge": 2, "hard": 1}
+
+
+def _strip_inline_comment(line: str) -> str:
+    """ES: Elimina comentarios en línea que comienzan con //.
+
+    EN: Remove inline comments that start with //.
+    """
+
+    return line.split("//", 1)[0].rstrip()
 
 
 def _load_clean_lines(file_path: Path) -> List[str]:
@@ -60,7 +70,10 @@ def _extract_charts(lines: Sequence[str]) -> List[dict]:
         note_lines: List[str] = []
         j = i + 6
         while j < len(lines):
-            current = lines[j].strip()
+            current = _strip_inline_comment(lines[j].strip())
+            if not current:
+                j += 1
+                continue
             if current.endswith(";"):
                 tail = current[:-1].strip()
                 if tail:
@@ -126,16 +139,39 @@ def _count_notes_per_measure(note_lines: Sequence[str]) -> List[int]:
     EN: Convert raw note lines into a per-measure note count list.
     """
 
-    measures = "\n".join(note_lines).split(",")
+    measures = _prepare_measures(note_lines)
+    densities, _ = _count_notes_and_rows(measures)
+    return densities
+
+
+def _prepare_measures(note_lines: Sequence[str]) -> List[List[str]]:
+    """ES: Estandariza los bloques de medidas limpiando comentarios y vacíos.
+
+    EN: Normalize measure blocks by stripping inline comments and empty rows.
+    """
+
+    measures: List[List[str]] = []
+    for block in "\n".join(note_lines).split(","):
+        rows: List[str] = []
+        for raw in block.splitlines():
+            row = _strip_inline_comment(raw).strip()
+            if row:
+                rows.append(row)
+        measures.append(rows)
+    return measures
+
+
+def _count_notes_and_rows(measures: Sequence[Sequence[str]]) -> Tuple[List[int], List[int]]:
+    """ES: Cuenta notas y filas por medida.
+
+    EN: Count notes and row lengths per measure.
+    """
+
     densities: List[int] = []
+    row_counts: List[int] = []
 
-    for measure_index, block in enumerate(measures):
-        stripped_block = block.strip()
-        if not stripped_block:
-            densities.append(0)
-            continue
-
-        rows = [row.strip() for row in stripped_block.splitlines() if row.strip()]
+    for measure_index, rows in enumerate(measures):
+        row_counts.append(len(rows))
         measure_count = 0
         for row in rows:
             if len(row) != 4:
@@ -148,10 +184,37 @@ def _count_notes_per_measure(note_lines: Sequence[str]) -> List[int]:
                     f"Unsupported symbols {invalid_symbols} in measure {measure_index}: '{row}'."
                 )
             measure_count += sum(1 for ch in row if ch in _NOTE_HEADS)
-
         densities.append(measure_count)
 
-    return densities
+    return densities, row_counts
+
+
+def _infer_subdivision(row_counts: Sequence[int]) -> int:
+    """ES: Infere la subdivisión base (16ths, 24ths, etc.) usando la moda de filas.
+
+    EN: Infer base subdivision (e.g., 16ths, 24ths) using the mode of row counts.
+    """
+
+    non_zero = [c for c in row_counts if c > 0]
+    if not non_zero:
+        return 16
+    return Counter(non_zero).most_common(1)[0][0]
+
+
+def parse_sm_chart_with_meta(file_path: Path) -> Tuple[List[int], int]:
+    """ES: Parsea un .sm y devuelve densidades y la subdivisión predominante.
+
+    EN: Parse an .sm and return densities plus the predominant subdivision.
+    """
+
+    lines = _load_clean_lines(file_path)
+    charts = _extract_charts(lines)
+    chart = _select_hardest_chart(charts)
+
+    measures = _prepare_measures(chart["note_lines"])
+    densities, row_counts = _count_notes_and_rows(measures)
+    subdivision = _infer_subdivision(row_counts)
+    return densities, subdivision
 
 
 def parse_sm_chart(file_path: Path) -> List[int]:
@@ -177,14 +240,12 @@ def parse_sm_chart(file_path: Path) -> List[int]:
         ValueError: If no suitable chart is found or the note data is malformed.
     """
 
-    lines = _load_clean_lines(file_path)
-    charts = _extract_charts(lines)
-    chart = _select_hardest_chart(charts)
-    return _count_notes_per_measure(chart["note_lines"])
+    densities, _ = parse_sm_chart_with_meta(file_path)
+    return densities
 
 
 if __name__ == "__main__":
-    test_path = Path("ml-core/data/raw/Stamina RPG 6/[19] lovism/lovism.sm")
+    test_path = Path("ml-core/data/raw/Stamina RPG 6/[26] Stratospheric Intricacy/stratospheric.sm")
     try:
         densities = parse_sm_chart(test_path)
     except FileNotFoundError:
