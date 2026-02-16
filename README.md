@@ -22,10 +22,16 @@ Este proyecto se inspira y construye sobre el trabajo previo de investigadores y
 - Eryk Banatt: [Auto-Rating ITG Stamina Charts with Machine Learning](https://github.com/ambisinister/itsa17)
 - som1sezhi: [ITG Difficulty Predictor](https://github.com/som1sezhi/itg-difficulty-predictor/)
 
+### Licencia y atribución
+
+Parte de la lógica de detección de streams está portada de Simply-Love-SM5 (GPLv3, 2020, Simply Love Team). Modificaciones: traducción a Python 3, ajuste de índices a base 0 e integración con el parser y las features. Ver [ml-core/src/features.py](ml-core/src/features.py) para los avisos y el historial de cambios.
+
 ### ⚠️ Descarga de Responsabilidad
 Gran parte del código de este proyecto ha sido generado o asistido mediante modelos de lenguaje (LLM) haciendo **vibe-coding**.
 
 Como estudiante de Ingeniería en Computación Inteligente, mi enfoque principal se centra en la arquitectura del sistema, la selección de modelos, la ingeniería de características y la validación de resultados. Sin embargo, el código resultante está sujeto a errores lógicos o de sintaxis típicos de la IA. Este repositorio es un esfuerzo colaborativo entre la supervisión humana y la automatización, y requiere una revisión constante para asegurar su correcto funcionamiento.
+
+---------------------------------------------------------
 
 ## English Version
 
@@ -50,6 +56,10 @@ This project is inspired by and builds upon the previous work of community resea
 
 - Eryk Banatt: [Auto-Rating ITG Stamina Charts with Machine Learning](https://github.com/ambisinister/itsa17)
 - som1sezhi: [ITG Difficulty Predictor](https://github.com/som1sezhi/itg-difficulty-predictor/)
+
+### License and Attribution
+
+Portions of the stream-detection logic are derived from Simply-Love-SM5 (GPLv3, 2020, Simply Love Team). Modifications: Python translation, 0-based indexing, and integration with the parser/features. See [ml-core/src/features.py](ml-core/src/features.py) for notices and change history.
 
 ### ⚠️ AI Disclosure
 A significant portion of the code in this project has been generated or assisted by Large Language Models (LLMs) doing **vibe-coding**.

@@ -7,37 +7,59 @@ from typing import Dict, List, Optional
 
 STREAM_THRESHOLD = 16
 
-StreamSegment = Dict[str, int | bool]
+StreamSegment = Dict[str, int | float | bool]
 
-def get_stream_sequences(
-    notes_per_measure: List[int], subdivision: Optional[int] = None
-) -> List[StreamSegment]:
-    """ES: Identifica rangos contiguos de stream y break según un umbral de notas.
+"""
+-------------------------------------------------------------------------------
+PORTED LOGIC DISCLAIMER - DISCLAIMER DE LÓGICA PORTEADA
+-------------------------------------------------------------------------------
 
-    Replica el helper `GetStreamSequences` de Simply Love con índices 0-based.
-    Un compás es *stream* si su conteo de notas es >= `threshold`. Los compases
-    contiguos forman un segmento de stream. Las pausas entre streams se registran
-    solo si duran al menos 2 compases, igual que la lógica en Lua.
+[EN]
+The logic for stream sequence detection in this module is a direct Python port 
+of the Lua code from the 'Simply Love' StepMania Theme.
+This adaptation is distributed under the GNU General Public License v3.0 (GPLv3)
+to comply with the original license terms.
 
-    EN: Identify contiguous stream and break ranges based on a note threshold.
-    Mirrors Simply Love’s `GetStreamSequences` with Pythonic 0-based indices. A
-    measure is a stream if its note count is >= `threshold`. Consecutive stream
-    measures form a stream segment. Breaks between streams are recorded when they
-    are at least 2 measures long, matching the Lua logic that ignores single-measure
-    breaks.
+Original Source: Simply-Love-SM5 (https://github.com/zarzob/Simply-Love-SM5)
+Original File:   Scripts/SL-ChartParserHelpers.lua
+Copyright (C):   2020 Simply Love Team
+License:         GNU GPLv3
 
-    Args:
-        notes_per_measure: Note counts per measure from the parser.
-        subdivision: Detected rows-per-measure grid (optional; not used to scale threshold).
+Modifications:
+- Translated from Lua to Python 3.10+ by José Carlos Macías Macías for academic thesis purposes.
+- Adjusted array indexing (1-based to 0-based).
+- Integrated into a Scikit-Learn pipeline context.
 
-    Returns:
-        List of segments, each as a dict with keys: `start` (inclusive), `end`
-        (inclusive), `is_break`, and `length` (number of measures in the segment).
+-------------------------------------------------------------------------------
+
+[ES]
+La lógica para la detección de secuencias de 'stream' en este módulo es un porte
+directo a Python del código Lua del tema 'Simply Love' de StepMania.
+Esta adaptación se distribuye bajo la Licencia Pública General de GNU v3.0 (GPLv3)
+para cumplir con los términos de la licencia original.
+
+Fuente Original: Simply-Love-SM5 (https://github.com/Simply-Love/Simply-Love-SM5)
+Archivo Orig.:   Scripts/SL-ChartParserHelpers.lua
+Copyright (C):   2020 Simply Love Team
+Licencia:        GNU GPLv3
+
+Modificaciones:
+- Traducido de Lua a Python 3.10+ por José Carlos Macías Macías para fines de tesis académica.
+- Ajuste de índices de arrays (base-1 a base-0).
+- Integración en un contexto de pipeline de Scikit-Learn.
+-------------------------------------------------------------------------------
+"""
+def _build_segments(notes_per_measure: List[int], threshold: int) -> List[StreamSegment]:
+    """ES: Construye segmentos stream/break con un umbral dado (helper interno).
+
+    Quita los breaks iniciales/finales para imitar el comportamiento del tema
+    StepMania.
+
+    EN: Build raw stream/break segments for a given threshold (internal helper).
+    Removes leading/trailing breaks to mirror the StepMania theme behavior.
     """
 
-    eff_threshold = STREAM_THRESHOLD  # Fixed cultural threshold for streams.
-
-    stream_measures = [i for i, n in enumerate(notes_per_measure) if n >= eff_threshold]
+    stream_measures = [i for i, n in enumerate(notes_per_measure) if n >= threshold]
     if not stream_measures:
         return []
 
@@ -45,7 +67,6 @@ def get_stream_sequences(
     stream_sequence_threshold = 1
     break_sequence_threshold = 2
 
-    # Leading break before the first stream segment, if it is long enough.
     break_start = 0
     first_stream = stream_measures[0]
     break_end = first_stream - 1
@@ -63,10 +84,9 @@ def get_stream_sequences(
 
         if next_val is not None and cur_val + 1 == next_val:
             counter += 1
-            stream_end = cur_val + 1  # tentative end (inclusive) as we extend the run
+            stream_end = cur_val + 1
             continue
 
-        # Finalize current stream run.
         if stream_end is None:
             stream_end = cur_val
         stream_start = stream_end - counter + 1
@@ -77,7 +97,6 @@ def get_stream_sequences(
                 {"start": stream_start, "end": stream_end, "is_break": False, "length": length}
             )
 
-        # Add an intermediate or trailing break if it is long enough.
         if next_val is not None:
             break_start = cur_val + 1
             break_end = next_val - 1
@@ -94,15 +113,95 @@ def get_stream_sequences(
         counter = 1
         stream_end = None
 
-    # Remove a leading break: the chart starts at the first stream.
     if stream_sequences and stream_sequences[0]["is_break"]:
         stream_sequences = stream_sequences[1:]
-
-    # Remove a trailing break: ignore padding after the last stream.
     if stream_sequences and stream_sequences[-1]["is_break"]:
         stream_sequences = stream_sequences[:-1]
 
     return stream_sequences
+
+
+def _compute_density(segments: List[StreamSegment], multiplier: float) -> float:
+    """ES: Calcula la densidad de stream escalada igual que el helper de Lua.
+
+    EN: Compute scaled stream density mirroring the Simply Love Lua helper.
+    """
+
+    scaled_stream = sum(seg["length"] * multiplier for seg in segments if not seg["is_break"])
+    scaled_total = sum(seg["length"] * multiplier for seg in segments)
+    if scaled_total == 0:
+        return 0.0
+    return scaled_stream / scaled_total
+
+
+def get_stream_sequences(
+    notes_per_measure: List[int], subdivision: Optional[int] = None
+) -> List[StreamSegment]:
+    """ES: Detecta secuencias de stream/break usando la lógica del tema Simply Love.
+
+    Implementa el mismo flujo que `GenerateBreakdownText` del Lua original: se
+    prueban umbrales altos (32, 24, 20) para captar charts en 24ths/32nds y se
+    cae a 16 como último recurso. Cada candidato se acepta solo si la densidad
+    de stream escalada es >= 0.2. Los largos se escalan con un multiplicador
+    equivalente a `threshold/16` para reportar longitudes comparables a 16ths.
+
+    EN: Detect stream/break segments following Simply Love's display logic. It
+    tries higher thresholds (32, 24, 20) to accommodate 24th/32nd charts and
+    falls back to 16. A candidate is accepted only if the scaled stream density
+    is >= 0.2. Lengths are scaled by `threshold/16` to keep them comparable to
+    16th-based breakdowns.
+
+    Args:
+        notes_per_measure: Note counts per measure from the parser.
+        subdivision: Rows-per-measure grid (metadata only; no direct scaling).
+
+    Returns:
+        Lista/List of segment dicts with keys: `start`, `end`, `is_break`,
+        `length` (raw measures), `scaled_length` (equivalent 16th-length), and
+        the selected `threshold`.
+    """
+
+    candidate_configs = [
+        {"threshold": 32, "multiplier": 2.0},
+        {"threshold": 24, "multiplier": 1.5},
+        {"threshold": 20, "multiplier": 1.25},
+        {"threshold": STREAM_THRESHOLD, "multiplier": 1.0},
+    ]
+
+    chosen_segments: List[StreamSegment] = []
+    chosen_multiplier = 1.0
+    chosen_threshold = STREAM_THRESHOLD
+
+    for config in candidate_configs:
+        segments = _build_segments(notes_per_measure, threshold=config["threshold"])
+        if not segments:
+            continue
+
+        density = _compute_density(segments, multiplier=config["multiplier"])
+        if density < 0.2:
+            continue
+
+        chosen_segments = segments
+        chosen_multiplier = config["multiplier"]
+        chosen_threshold = config["threshold"]
+        break
+
+    if not chosen_segments:
+        chosen_segments = _build_segments(notes_per_measure, threshold=STREAM_THRESHOLD)
+        chosen_multiplier = 1.0
+        chosen_threshold = STREAM_THRESHOLD
+
+    for seg in chosen_segments:
+        scaled_len = int(seg["length"] * chosen_multiplier)
+        seg.update(
+            {
+                "scaled_length": max(1, scaled_len),
+                "threshold": chosen_threshold,
+                "multiplier": chosen_multiplier,
+            }
+        )
+
+    return chosen_segments
 
 
 def calculate_breakdown_metrics(
@@ -123,9 +222,9 @@ def calculate_breakdown_metrics(
 
     sequences = get_stream_sequences(notes_per_measure, subdivision=subdivision)
 
-    total_stream_length = sum(seg["length"] for seg in sequences if not seg["is_break"])
-    total_break_length = sum(seg["length"] for seg in sequences if seg["is_break"])
-    max_stream_length = max((seg["length"] for seg in sequences if not seg["is_break"]), default=0)
+    total_stream_length = sum(seg.get("scaled_length", seg["length"]) for seg in sequences if not seg["is_break"])
+    total_break_length = sum(seg.get("scaled_length", seg["length"]) for seg in sequences if seg["is_break"])
+    max_stream_length = max((seg.get("scaled_length", seg["length"]) for seg in sequences if not seg["is_break"]), default=0)
     break_count = sum(1 for seg in sequences if seg["is_break"])
 
     stream_break_ratio = (
@@ -172,15 +271,16 @@ def generate_breakdown_string(
 
     parts: List[str] = []
     for seg in segments:
+        display_len = seg.get("scaled_length", seg["length"])
         if seg["is_break"]:
-            parts.append(f"({seg['length']})")
+            parts.append(f"({display_len})")
         else:
-            parts.append(str(seg["length"]))
+            parts.append(str(display_len))
     return " ".join(parts)
 
 
 if __name__ == "__main__":
-    dummy_path = Path("ml-core/data/raw/Stamina RPG 6/[26] Stratospheric Intricacy/stratospheric.sm")
+    dummy_path = Path("ml-core/data/raw/Stamina RPG 6/[23] Cycle Hit/Cycle Hit.sm")
     try:
         from parser import parse_sm_chart_with_meta
 
