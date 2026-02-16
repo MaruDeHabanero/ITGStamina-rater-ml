@@ -1,0 +1,210 @@
+= Unlocks tech cleanup =
+Charts marcados (tech): 206
+Espacio estimado: 4.10 MiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[11] Hank's Back | banner=srpg8bdprtunlockbn.png | size=5.37 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[11] Snows | banner=srpg8bdprtunlockbn.png | size=9.39 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] 8-Bit Trip 2 | banner=srpg8bdprtunlockbn.png | size=8.92 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] Deep Down | banner=srpg8bdprtunlockbn.png | size=7.16 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] Naatu Naatu | banner=srpg8bdprtunlockbn.png | size=15.81 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] Tearz | banner=srpg8bdprtunlockbn.png | size=18.27 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] Tropical Boost | banner=srpg8bdprtunlockbn.png | size=13.00 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[12] Tunak Tunak Tun | banner=srpg8bdprtunlockbn.png | size=5.14 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] Credits EX | banner=srpg8bdprtunlockbn.png | size=8.62 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] Living Will | banner=srpg8bdprtunlockbn.png | size=13.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] One Winged Angel | banner=srpg8bdprtunlockbn.png | size=20.34 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] Revolution | banner=srpg8bdprtunlockbn.png | size=7.93 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] Wiggle | banner=srpg8bdprtunlockbn.png | size=7.24 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] Wubversary Decade Fusion Blend (Side A) | banner=srpg8bdprtunlockbn.png | size=30.65 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[13] You Too Much | banner=srpg8bdprtunlockbn.png | size=16.59 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] 1516 | banner=srpg8bdprtunlockbn.png | size=15.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] 1KARUGA | banner=srpg8bdprtunlockbn.png | size=93.53 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] DIAVOLO | banner=srpg8bdprtunlockbn.png | size=9.47 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] Emotional Clap | banner=srpg8bdprtunlockbn.png | size=33.92 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] Fantasie-Celeritas | banner=srpg8bdprtunlockbn.png | size=8.24 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] Preserved Valkyria | banner=srpg8bdprtunlockbn.png | size=7.16 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[14] Shakunetsu Beach Side Bunny (Camellia's Summertime D'n'B Remix) | banner=srpg8bdprtunlockbn.png | size=11.73 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] ARCADIA | banner=srpg8bdprtunlockbn.png | size=17.83 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Crystal Gravity | banner=srpg8bdprtunlockbn.png | size=14.21 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Dream War | banner=srpg8bdprtunlockbn.png | size=18.74 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Elvis | banner=srpg8bdprtunlockbn.png | size=8.91 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Furifuri | banner=srpg8bdprtunlockbn.png | size=7.00 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Rapid Return | banner=srpg8bdprtunlockbn.png | size=104.99 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Skynet | banner=srpg8bdprtunlockbn.png | size=10.58 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[15] Ultimate taste | banner=srpg8bdprtunlockbn.png | size=15.09 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[16] Accelerator | banner=srpg8bdprtunlockbn.png | size=17.66 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[16] AEON.CRUSHER | banner=srpg8bdprtunlockbn.png | size=9.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[16] Bring Me To Life | banner=srpg8bdprtunlockbn.png | size=12.56 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[16] Double Helix | banner=srpg8bdprtunlockbn.png | size=43.70 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[16] Loituma Speedcore | banner=srpg8bdprtunlockbn.png | size=18.87 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[17] Another Xronixle | banner=srpg8bdprtunlockbn.png | size=24.21 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[17] LA8YRNTH | banner=srpg8bdprtunlockbn.png | size=44.14 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[17] Livin La Vida Loca (Tech) | banner=srpg8bdprtunlockbn.png | size=18.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[17] Stabwound | banner=srpg8bdprtunlockbn.png | size=9.12 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[18] DiXaster | banner=srpg8bdprtunlockbn.png | size=10.52 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[18] Miasma | banner=srpg8bdprtunlockbn.png | size=19.48 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[18] On the Cobbles of Hell | banner=srpg8bdprtunlockbn.png | size=26.93 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 8 - Unlocks/[18] WYSI | banner=srpg8bdprtunlockbn.png | size=23.82 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[11] Candy Cream (Update VIP) (Hard) | banner=srpg5zdprtunlockbn.png | size=21.55 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[11] Elvis | banner=srpg5zdprtunlockbn.png | size=6.21 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[11] EVO66 | banner=srpg5zdprtunlockbn.png | size=6.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Electrical Paradise | banner=srpg5zdprtunlockbn.png | size=7.84 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Gens d'Armes | banner=srpg5zdprtunlockbn.png | size=10.52 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Jinsei wa Hoeru | banner=srpg5zdprtunlockbn.png | size=12.00 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Karyawisata | banner=srpg5zdprtunlockbn.png | size=7.29 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Still Into You (Hard) | banner=srpg5zdprtunlockbn.png | size=9.85 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] The White Stag | banner=srpg5zdprtunlockbn.png | size=14.35 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[12] Well Rested | banner=srpg5zdprtunlockbn.png | size=27.60 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Desperation | banner=srpg5zdprtunlockbn.png | size=14.88 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Drifting Away | banner=srpg5zdprtunlockbn.png | size=194.73 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Dysangel | banner=srpg5zdprtunlockbn.png | size=7.09 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] EVANESCENT | banner=srpg5zdprtunlockbn.png | size=10.34 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] HTTP | banner=srpg5zdprtunlockbn.png | size=8.92 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Ibuki | banner=srpg5zdprtunlockbn.png | size=19.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Mist (Hard) | banner=srpg5zdprtunlockbn.png | size=22.44 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Psyched Fevereiro | banner=srpg5zdprtunlockbn.png | size=9.29 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Remember Me | banner=srpg5zdprtunlockbn.png | size=17.20 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] Spiral In, Swerve Out | banner=srpg5zdprtunlockbn.png | size=16.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] stoic (EXTREME Version) | banner=srpg5zdprtunlockbn.png | size=6.31 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[13] teknopathetic | banner=srpg5zdprtunlockbn.png | size=30.91 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Club Night | banner=srpg5zdprtunlockbn.png | size=12.95 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Deconstruction Star | banner=srpg5zdprtunlockbn.png | size=10.01 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Ground Quake (Easy) | banner=srpg5zdprtunlockbn.png | size=26.27 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] I'll Remember You (Easy) | banner=srpg5zdprtunlockbn.png | size=16.88 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Momentary Life | banner=srpg5zdprtunlockbn.png | size=17.72 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Nyx Metropolis | banner=srpg5zdprtunlockbn.png | size=39.38 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] ONI-KEN-BAI | banner=srpg5zdprtunlockbn.png | size=22.90 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Realize | banner=srpg5zdprtunlockbn.png | size=20.77 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] spooky | banner=srpg5zdprtunlockbn.png | size=23.69 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Tiger | banner=srpg5zdprtunlockbn.png | size=24.35 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] tower of dreams | banner=srpg5zdprtunlockbn.png | size=12.09 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[14] Windy Windy Wind | banner=srpg5zdprtunlockbn.png | size=15.43 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] 8-Bit Trip | banner=srpg5zdprtunlockbn.png | size=14.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] Beautiful Creatures | banner=srpg5zdprtunlockbn.png | size=44.71 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] BoxelAdventure | banner=srpg5zdprtunlockbn.png | size=16.77 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] First Remote | banner=srpg5zdprtunlockbn.png | size=8.82 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] If You're 666, Then I'm 667 | banner=srpg5zdprtunlockbn.png | size=17.96 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] illegal legacy | banner=srpg5zdprtunlockbn.png | size=10.75 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] Matt Silver (Extended Mix) | banner=srpg5zdprtunlockbn.png | size=33.12 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] Psi Glory | banner=srpg5zdprtunlockbn.png | size=16.64 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] Spider Sauce | banner=srpg5zdprtunlockbn.png | size=16.03 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] Stealth Dash | banner=srpg5zdprtunlockbn.png | size=44.38 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] SUPER MEMORIES | banner=srpg5zdprtunlockbn.png | size=23.76 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[15] UNLEA5H the NO1ZE | banner=srpg5zdprtunlockbn.png | size=31.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] BLASTBURN | banner=srpg5zdprtunlockbn.png | size=20.22 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Blood Angels (Tech) | banner=srpg5zdprtunlockbn.png | size=28.60 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Chronomia (Hard) | banner=srpg5zdprtunlockbn.png | size=11.78 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Einherjar Joker | banner=srpg5zdprtunlockbn.png | size=12.53 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] GHOST | banner=srpg5zdprtunlockbn.png | size=28.25 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Mermaid Island | banner=srpg5zdprtunlockbn.png | size=12.85 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Sayonara Cosmonaut | banner=srpg5zdprtunlockbn.png | size=13.87 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Weird Science | banner=srpg5zdprtunlockbn.png | size=38.57 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[16] Wrath of the divine wing | banner=srpg5zdprtunlockbn.png | size=21.94 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] Astral Empire (Hard) | banner=srpg5zdprtunlockbn.png | size=27.12 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] JUNKIE FLAVOR (Medium) | banner=srpg5zdprtunlockbn.png | size=12.18 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] Monster (Radio Edit) | banner=srpg5zdprtunlockbn.png | size=35.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] Superluminal | banner=srpg5zdprtunlockbn.png | size=18.63 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] World Fragments | banner=srpg5zdprtunlockbn.png | size=66.65 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 5 - Unlocks/[17] Zombie Sunset (Hard) | banner=srpg5zdprtunlockbn.png | size=40.47 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[11] Leading Cyber | banner=srpg7bdprtunlockbn.png | size=7.11 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[11] Step Back! | banner=srpg7bdprtunlockbn.png | size=10.04 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] El venenciador | banner=srpg7bdprtunlockbn.png | size=10.46 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] Genie In A Bottle | banner=srpg7bdprtunlockbn.png | size=4.83 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] Kamigakari | banner=srpg7bdprtunlockbn.png | size=16.86 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] Let Me | banner=srpg7bdprtunlockbn.png | size=16.50 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] Scarlet Police on Ghetto Patrol 24 Hours | banner=srpg7bdprtunlockbn.png | size=10.10 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] Snake Charmer | banner=srpg7bdprtunlockbn.png | size=11.17 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] The Formula | banner=srpg7bdprtunlockbn.png | size=8.45 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[12] U Got 2 Know | banner=srpg7bdprtunlockbn.png | size=11.37 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Candy Crack Curtain Call | banner=srpg7bdprtunlockbn.png | size=7.99 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Clandestine Stars | banner=srpg7bdprtunlockbn.png | size=12.84 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Final Boss II | banner=srpg7bdprtunlockbn.png | size=10.67 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Godzilla | banner=srpg7bdprtunlockbn.png | size=9.45 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] How we Frustrate Benjamin at a Funeral | banner=srpg7bdprtunlockbn.png | size=37.86 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Love Bomb | banner=srpg7bdprtunlockbn.png | size=9.31 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] MESMERA | banner=srpg7bdprtunlockbn.png | size=15.54 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Move Along (2023 Rebuild) | banner=srpg7bdprtunlockbn.png | size=8.35 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[13] Someone Special (Reflection Remix) | banner=srpg7bdprtunlockbn.png | size=10.53 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Blade | banner=srpg7bdprtunlockbn.png | size=4.79 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Dances With Snow Fairies | banner=srpg7bdprtunlockbn.png | size=12.91 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Elimination is Imminent | banner=srpg7bdprtunlockbn.png | size=44.86 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Holy Orders (Be Just or Be Dead) (Exploding Festival Ver.) | banner=srpg7bdprtunlockbn.png | size=13.80 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] S0N1C XPL0R4T10N | banner=srpg7bdprtunlockbn.png | size=19.63 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Softbank | banner=srpg7bdprtunlockbn.png | size=9.94 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] Worldwide Choppers | banner=srpg7bdprtunlockbn.png | size=25.82 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[14] You're Gonna Love Me | banner=srpg7bdprtunlockbn.png | size=13.32 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] Lol It Out | banner=srpg7bdprtunlockbn.png | size=21.06 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] One Of Us | banner=srpg7bdprtunlockbn.png | size=11.96 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] Red Sheets, White Lies | banner=srpg7bdprtunlockbn.png | size=15.90 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] Scars of Yesterday | banner=srpg7bdprtunlockbn.png | size=37.96 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] Shake It Off | banner=srpg7bdprtunlockbn.png | size=11.75 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[15] World Ender | banner=srpg7bdprtunlockbn.png | size=11.14 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[16] Block Party | banner=srpg7bdprtunlockbn.png | size=14.75 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[16] Evaquated | banner=srpg7bdprtunlockbn.png | size=22.27 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[16] Kasta Sten | banner=srpg7bdprtunlockbn.png | size=8.30 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[16] Kyuukou | banner=srpg7bdprtunlockbn.png | size=27.49 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[17] Electromagnetic Stealth Girl Born In Philadelphia | banner=srpg7bdprtunlockbn.png | size=23.75 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[17] Mystery Circles Ultra UUFO | banner=srpg7bdprtunlockbn.png | size=34.15 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[17] OOPARTS | banner=srpg7bdprtunlockbn.png | size=49.82 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 7 - Unlocks/[17] RPG | banner=srpg7bdprtunlockbn.png | size=24.02 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[11] B4U | banner=srpg6zdprtunlockbn.png | size=5.06 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[11] Fractals | banner=srpg6zdprtunlockbn.png | size=7.78 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[11] Musician | banner=srpg6zdprtunlockbn.png | size=7.00 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[11] Selfie | banner=srpg6zdprtunlockbn.png | size=13.14 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Banana (SPRG6 Cut) | banner=srpg6zdprtunlockbn.png | size=44.77 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Bring Me to Life | banner=srpg6zdprtunlockbn.png | size=8.15 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Hotaru (cYsmix Remix) | banner=srpg6zdprtunlockbn.png | size=10.74 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Mad Love | banner=srpg6zdprtunlockbn.png | size=17.50 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Roller Mobster | banner=srpg6zdprtunlockbn.png | size=8.04 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Solar Blade | banner=srpg6zdprtunlockbn.png | size=7.15 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Sorry | banner=srpg6zdprtunlockbn.png | size=10.51 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Stranglehold (Moki Remix) | banner=srpg6zdprtunlockbn.png | size=8.08 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[12] Worn Out Tapes | banner=srpg6zdprtunlockbn.png | size=6.73 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Ajisai | banner=srpg6zdprtunlockbn.png | size=9.49 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] BLSTR | banner=srpg6zdprtunlockbn.png | size=7.65 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Extraordinary Future | banner=srpg6zdprtunlockbn.png | size=7.20 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Flashback (Astrix Remix) | banner=srpg6zdprtunlockbn.png | size=138.53 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Flying Castle | banner=srpg6zdprtunlockbn.png | size=7.44 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] freaky freak | banner=srpg6zdprtunlockbn.png | size=11.15 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Kaleidoscope | banner=srpg6zdprtunlockbn.png | size=8.48 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] MUSIC MASH-INE | banner=srpg6zdprtunlockbn.png | size=55.34 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] My Humps | banner=srpg6zdprtunlockbn.png | size=8.62 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Revenge (Reek Remix) | banner=srpg6zdprtunlockbn.png | size=16.50 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Speedom (WWC2) | banner=srpg6zdprtunlockbn.png | size=14.55 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[13] Synchronize | banner=srpg6zdprtunlockbn.png | size=8.11 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Antifront Gears | banner=srpg6zdprtunlockbn.png | size=8.09 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] CODE-0 | banner=srpg6zdprtunlockbn.png | size=10.88 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] crossing blue | banner=srpg6zdprtunlockbn.png | size=8.01 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] DEKKKKKA | banner=srpg6zdprtunlockbn.png | size=14.93 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Dhating Naach | banner=srpg6zdprtunlockbn.png | size=9.97 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Electric Injury | banner=srpg6zdprtunlockbn.png | size=8.54 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] SCREW owo SCREW | banner=srpg6zdprtunlockbn.png | size=10.59 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Signal | banner=srpg6zdprtunlockbn.png | size=13.60 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Subag (SRPG6 Cut) | banner=srpg6zdprtunlockbn.png | size=46.33 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Terrabreak | banner=srpg6zdprtunlockbn.png | size=13.43 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] True Blue | banner=srpg6zdprtunlockbn.png | size=6.70 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[14] Volatile Memory | banner=srpg6zdprtunlockbn.png | size=15.09 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] 9876734123 | banner=srpg6zdprtunlockbn.png | size=10.67 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Abyss of Frobenioid | banner=srpg6zdprtunlockbn.png | size=9.86 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Brainfog | banner=srpg6zdprtunlockbn.png | size=7.48 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Breakaway | banner=srpg6zdprtunlockbn.png | size=60.90 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Compute It With Some Devilish Alcoholic Steampunk Engines | banner=srpg6zdprtunlockbn.png | size=18.46 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Crash Up Against The Inevitable | banner=srpg6zdprtunlockbn.png | size=9.47 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Cryochemistry | banner=srpg6zdprtunlockbn.png | size=24.42 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Final-Boss-Chan | banner=srpg6zdprtunlockbn.png | size=21.55 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] METEORITE | banner=srpg6zdprtunlockbn.png | size=14.56 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] Rough Percussionythm | banner=srpg6zdprtunlockbn.png | size=8.96 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[15] SYSTEMIC OVERLOAD | banner=srpg6zdprtunlockbn.png | size=50.89 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] Firmament | banner=srpg6zdprtunlockbn.png | size=23.14 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] Mystic Mirage | banner=srpg6zdprtunlockbn.png | size=19.69 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] One One | banner=srpg6zdprtunlockbn.png | size=98.05 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] Quango | banner=srpg6zdprtunlockbn.png | size=40.69 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] Sound of the Underground | banner=srpg6zdprtunlockbn.png | size=22.97 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] STEEL TRANSONIC | banner=srpg6zdprtunlockbn.png | size=8.77 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[16] true DJ MAG top ranker's song (katagiri remix) | banner=srpg6zdprtunlockbn.png | size=26.20 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] Jikininki | banner=srpg6zdprtunlockbn.png | size=18.37 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] onslaught -Retaliation of Bahamut- | banner=srpg6zdprtunlockbn.png | size=10.68 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] Pleasant Farmer | banner=srpg6zdprtunlockbn.png | size=8.46 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] Psyquidelic | banner=srpg6zdprtunlockbn.png | size=77.57 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] Purple Palace | banner=srpg6zdprtunlockbn.png | size=57.90 KiB
+- /home/maru/Documents/Tesina/ITGStamina-rater-ml/ml-core/data/raw/Stamina RPG 6 - Unlocks/[17] THE GENERATOR | banner=srpg6zdprtunlockbn.png | size=9.12 KiB
+Borrado completado.

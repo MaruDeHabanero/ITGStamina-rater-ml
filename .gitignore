@@ -8,7 +8,6 @@ ml-core/venv/
 ml-core/.venv/
 ml-core/__pycache__/
 ml-core/data/raw/
-ml-core/data/processed/
 *.pyc
 
 # === NODE JS (web-app) ===
