@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from pprint import pprint
 from statistics import mean
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 STREAM_THRESHOLD = 16
 
@@ -204,21 +204,73 @@ def get_stream_sequences(
     return chosen_segments
 
 
+def calculate_ebpm_profile(
+    notes_data: Dict[str, Optional[float] | List[int]]
+) -> Dict[str, Optional[float] | List[Optional[float]]]:
+    """ES: Calcula el perfil de NPS y eBPM por compás a partir de Display BPM.
+
+    Si no hay Display BPM válido, devuelve listas de None para evitar divisiones
+    por cero.
+
+    EN: Compute per-measure NPS and eBPM profile from a Display BPM. If Display BPM
+    is missing/invalid, return None-filled lists to avoid division by zero.
+
+    Args:
+        notes_data: Dict con `display_bpm` y `notes_per_measure`.
+
+    Returns:
+        Dict con `display_bpm`, `measure_seconds`, `nps_per_measure`, y
+        `ebpm_per_measure`.
+    """
+
+    notes_per_measure = notes_data.get("notes_per_measure", [])
+    display_bpm = notes_data.get("display_bpm")
+
+    if not display_bpm or display_bpm <= 0:
+        return {
+            "display_bpm": display_bpm,
+            "measure_seconds": None,
+            "nps_per_measure": [None for _ in notes_per_measure],
+            "ebpm_per_measure": [None for _ in notes_per_measure],
+        }
+
+    measure_seconds = 240.0 / display_bpm
+    nps_per_measure = [count / measure_seconds for count in notes_per_measure]
+    ebpm_per_measure = [nps * 15.0 for nps in nps_per_measure]
+
+    return {
+        "display_bpm": display_bpm,
+        "measure_seconds": measure_seconds,
+        "nps_per_measure": nps_per_measure,
+        "ebpm_per_measure": ebpm_per_measure,
+    }
+
+
 def calculate_breakdown_metrics(
-    notes_per_measure: List[int], subdivision: Optional[int] = None
-) -> Dict[str, float | int]:
+    notes_input: Union[List[int], Dict[str, Optional[float] | List[int]]],
+    subdivision: Optional[int] = None,
+) -> Dict[str, float | int | None]:
     """ES: Calcula métricas resumen a partir de la densidad de notas por compás.
 
     EN: Compute summary metrics from per-measure note densities, mirroring the Lua
     helper for downstream ML features.
 
     Args:
-        notes_per_measure: Note counts per measure from the parser.
+        notes_input: Lista de notas por compás o dict con `display_bpm` y
+            `notes_per_measure`.
 
     Returns:
         Diccionario/Dictionary con estadísticas agregadas: `total_stream_length`,
-        `max_stream_length`, `break_count`, `stream_break_ratio`, y `average_nps`.
+        `max_stream_length`, `break_count`, `stream_break_ratio`, `average_nps`,
+        `peak_ebpm`, y `average_ebpm`.
     """
+
+    if isinstance(notes_input, dict):
+        notes_per_measure = notes_input.get("notes_per_measure", [])
+        display_bpm = notes_input.get("display_bpm")
+    else:
+        notes_per_measure = notes_input
+        display_bpm = None
 
     sequences = get_stream_sequences(notes_per_measure, subdivision=subdivision)
 
@@ -231,7 +283,34 @@ def calculate_breakdown_metrics(
         float(total_stream_length) / float(total_break_length) if total_break_length > 0 else float("inf")
     )
 
-    average_nps = mean(notes_per_measure) if notes_per_measure else 0.0
+    if display_bpm and display_bpm > 0:
+        measure_seconds = 240.0 / display_bpm
+        average_nps = mean(
+            [count / measure_seconds for count in notes_per_measure]
+        ) if notes_per_measure else 0.0
+    else:
+        average_nps = mean(notes_per_measure) if notes_per_measure else 0.0
+
+    peak_ebpm: Optional[float] = None
+    average_ebpm: Optional[float] = None
+    if display_bpm and display_bpm > 0 and notes_per_measure:
+        measure_seconds = 240.0 / display_bpm
+        ebpm_per_measure = [
+            (count / measure_seconds) * 15.0 for count in notes_per_measure
+        ]
+        stream_indices: List[int] = []
+        for seg in sequences:
+            if seg["is_break"]:
+                continue
+            start = max(0, int(seg["start"]))
+            end = min(len(notes_per_measure) - 1, int(seg["end"]))
+            if start <= end:
+                stream_indices.extend(range(start, end + 1))
+
+        if stream_indices:
+            stream_ebpm = [ebpm_per_measure[i] for i in stream_indices]
+            peak_ebpm = max(stream_ebpm)
+            average_ebpm = mean(stream_ebpm)
 
     return {
         "total_stream_length": total_stream_length,
@@ -239,6 +318,8 @@ def calculate_breakdown_metrics(
         "break_count": break_count,
         "stream_break_ratio": stream_break_ratio,
         "average_nps": average_nps,
+        "peak_ebpm": peak_ebpm,
+        "average_ebpm": average_ebpm,
     }
 
 
@@ -284,7 +365,8 @@ if __name__ == "__main__":
     try:
         from parser import parse_sm_chart_with_meta
 
-        densities, subdivision = parse_sm_chart_with_meta(dummy_path)
+        notes_data, subdivision = parse_sm_chart_with_meta(dummy_path)
+        densities = notes_data["notes_per_measure"]
         print("Stream sequences:")
         seqs = get_stream_sequences(densities, subdivision=subdivision)
         formatted_sequences = [
@@ -298,7 +380,7 @@ if __name__ == "__main__":
         ]
         pprint(formatted_sequences, sort_dicts=False)
         print("\nMetrics:")
-        pprint(calculate_breakdown_metrics(densities, subdivision=subdivision))
+        pprint(calculate_breakdown_metrics(notes_data, subdivision=subdivision))
         print("\nBreakdown string:")
         print(generate_breakdown_string(densities, subdivision=subdivision))
     except Exception as exc:  # noqa: BLE001 - CLI helper only
