@@ -4,6 +4,17 @@ from collections import Counter
 from pathlib import Path
 import re
 from typing import Dict, List, Optional, Sequence, Tuple
+from typing_extensions import TypedDict
+
+
+class NotesData(TypedDict):
+    """ES: Resultado del parseo de un .sm: BPM mostrado y notas por compás.
+
+    EN: Parsed .sm result: display BPM and per-measure note counts.
+    """
+
+    display_bpm: Optional[float]
+    notes_per_measure: List[int]
 
 _NOTE_SYMBOLS = {"0", "1", "2", "3", "4", "M"}
 _NOTE_HEADS = {"1", "2", "4"}
@@ -306,7 +317,7 @@ def _infer_subdivision(row_counts: Sequence[int]) -> int:
     return Counter(non_zero).most_common(1)[0][0]
 
 
-def parse_sm_chart_with_meta(file_path: Path) -> Tuple[Dict[str, Optional[float] | List[int]], int]:
+def parse_sm_chart_with_meta(file_path: Path) -> Tuple[NotesData, int]:
     """ES: Parsea un .sm y devuelve notas por compás, Display BPM y subdivisión.
 
     EN: Parse an .sm and return per-measure notes, Display BPM, and subdivision.
@@ -320,11 +331,11 @@ def parse_sm_chart_with_meta(file_path: Path) -> Tuple[Dict[str, Optional[float]
     measures = _prepare_measures(chart["note_lines"])
     densities, row_counts = _count_notes_and_rows(measures)
     subdivision = _infer_subdivision(row_counts)
-    notes_data = {"display_bpm": display_bpm, "notes_per_measure": densities}
+    notes_data: NotesData = {"display_bpm": display_bpm, "notes_per_measure": densities}
     return notes_data, subdivision
 
 
-def parse_sm_chart(file_path: Path) -> Dict[str, Optional[float] | List[int]]:
+def parse_sm_chart(file_path: Path) -> NotesData:
     """ES: Parsea un archivo .sm de StepMania y produce notas por compás y Display BPM.
 
     El parser elimina comentarios, extrae los bloques `#NOTES`, selecciona el chart
