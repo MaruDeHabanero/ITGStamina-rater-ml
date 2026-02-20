@@ -8,12 +8,13 @@ from typing_extensions import TypedDict
 
 
 class NotesData(TypedDict):
-    """ES: Resultado del parseo de un .sm: BPM mostrado y notas por compás.
+    """ES: Resultado del parseo de un .sm: BPM mostrado, block y notas por compás.
 
-    EN: Parsed .sm result: display BPM and per-measure note counts.
+    EN: Parsed .sm result: display BPM, difficulty block, and per-measure note counts.
     """
 
     display_bpm: Optional[float]
+    block: int
     notes_per_measure: List[int]
 
 _NOTE_SYMBOLS = {"0", "1", "2", "3", "4", "M"}
@@ -179,9 +180,9 @@ def _extract_charts(lines: Sequence[str]) -> List[dict]:
         radar = lines[i + 5].strip().rstrip(":")
 
         try:
-            meter = int(meter_text)
+            block = int(meter_text)
         except ValueError:
-            meter = 0
+            block = 0
 
         note_lines: List[str] = []
         j = i + 6
@@ -204,7 +205,7 @@ def _extract_charts(lines: Sequence[str]) -> List[dict]:
                 "type": chart_type,
                 "description": description,
                 "difficulty": difficulty,
-                "meter": meter,
+                "block": block,
                 "radar": radar,
                 "note_lines": note_lines,
             }
@@ -223,7 +224,7 @@ def _select_hardest_chart(charts: Sequence[dict]) -> dict:
 
     selected: dict | None = None
     selected_priority = -1
-    selected_meter = -1
+    selected_block = -1
 
     for chart in charts:
         if chart.get("type") != "dance-single":
@@ -233,15 +234,15 @@ def _select_hardest_chart(charts: Sequence[dict]) -> dict:
         if priority is None:
             continue
 
-        meter = chart.get("meter", 0)
+        block = chart.get("block", 0)
         if (
             selected is None
             or priority > selected_priority
-            or (priority == selected_priority and meter > selected_meter)
+            or (priority == selected_priority and block > selected_block)
         ):
             selected = chart
             selected_priority = priority
-            selected_meter = meter
+            selected_block = block
 
     if selected is None:
         raise ValueError("No suitable dance-single chart with difficulty Hard or Challenge was found.")
@@ -318,9 +319,25 @@ def _infer_subdivision(row_counts: Sequence[int]) -> int:
 
 
 def parse_sm_chart_with_meta(file_path: Path) -> Tuple[NotesData, int]:
-    """ES: Parsea un .sm y devuelve notas por compás, Display BPM y subdivisión.
+    """ES: Parsea un .sm y devuelve notas por compás, Display BPM, block y subdivisión.
 
-    EN: Parse an .sm and return per-measure notes, Display BPM, and subdivision.
+    El campo `block` en el dict resultante es la variable objetivo de clasificación,
+    es decir, la dificultad numérica del chart (e.g. 19).
+
+    EN: Parse an .sm and return per-measure notes, Display BPM, block, and subdivision.
+
+    The `block` field in the returned dict is the classification target label:
+    the numeric difficulty rating of the chart (e.g. 19).
+
+    Args:
+        file_path: Path to a StepMania .sm file.
+
+    Returns:
+        Tuple of (NotesData, subdivision) where NotesData contains `display_bpm`,
+        `block` (the label to predict), and `notes_per_measure`.
+
+    Raises:
+        ValueError: If no suitable dance-single chart is found.
     """
 
     lines = _load_clean_lines(file_path)
@@ -331,7 +348,11 @@ def parse_sm_chart_with_meta(file_path: Path) -> Tuple[NotesData, int]:
     measures = _prepare_measures(chart["note_lines"])
     densities, row_counts = _count_notes_and_rows(measures)
     subdivision = _infer_subdivision(row_counts)
-    notes_data: NotesData = {"display_bpm": display_bpm, "notes_per_measure": densities}
+    notes_data: NotesData = {
+        "display_bpm": display_bpm,
+        "block": chart["block"],
+        "notes_per_measure": densities,
+    }
     return notes_data, subdivision
 
 
@@ -351,7 +372,10 @@ def parse_sm_chart(file_path: Path) -> NotesData:
         file_path: Path to a StepMania .sm file.
 
     Returns:
-        Dict con `display_bpm` y `notes_per_measure` para el chart seleccionado.
+        Dict con `display_bpm`, `block` (variable objetivo de clasificación) y
+        `notes_per_measure` para el chart seleccionado.
+        / Dict with `display_bpm`, `block` (classification target label), and
+        `notes_per_measure` for the selected chart.
 
     Raises:
         FileNotFoundError: If the file does not exist.
