@@ -3,3 +3,7 @@ scikit-learn
 skl2onnx
 jupyter
 typing_extensions
+tqdm
+matplotlib
+numpy
+seaborn
