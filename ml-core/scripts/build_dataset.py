@@ -25,7 +25,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import logging
-import math
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -125,6 +124,7 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
 
     notes_per_measure: List[int] = notes_data["notes_per_measure"]
     difficulty: int = notes_data["block"]
+    display_bpm: Optional[float] = notes_data.get("display_bpm")
 
     try:
         metrics = calculate_breakdown_metrics(notes_data, subdivision=subdivision)
@@ -144,6 +144,7 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
     record: Dict = {
         "difficulty": difficulty,
         "source_file": rel_path,
+        "display_bpm": display_bpm,
         "_notes_hash": notes_hash,
         **metrics,
     }
@@ -161,9 +162,11 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     most recent re-rate of a chart wins.
 
     Post-processing steps applied before returning:
-    - `stream_break_ratio` Inf values → pd.NA  (ML-safe; Inf breaks most algorithms)
-    - Column rename: `max_burst_ebpm` → `peak_ebpm`
     - MD5 hash truncated to 8 hex chars and saved as `chart_id` (first column)
+    - Columns reordered to match community spreadsheet convention:
+      chart_id | difficulty | source_file | display_bpm | ebpm |
+      total_stream_length | max_stream_length | break_count |
+      stream_break_ratio | average_nps
 
     Español: Recorre raw_dir de forma recursiva, parsea todos los archivos .sm,
     deduplica por MD5 y devuelve un DataFrame limpio de características.
@@ -174,10 +177,8 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     la anterior, es decir gana el re-rateo más reciente del chart.
 
     Pasos de post-procesamiento aplicados antes de devolver:
-    - Valores Inf en `stream_break_ratio` → pd.NA  (seguro para ML; Inf rompe
-      la mayoría de algoritmos)
-    - Renombrado de columna: `max_burst_ebpm` → `peak_ebpm`
     - Hash MD5 truncado a 8 hex chars y guardado como `chart_id` (primera columna)
+    - Columnas reordenadas siguiendo la convención de la hoja de cálculo comunitaria.
 
     Args:
         raw_dir: Directorio raíz que contiene los packs/charts .sm.
@@ -239,23 +240,26 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     df["chart_id"] = df["_notes_hash"].str[:8]
     df.drop(columns=["_notes_hash"], inplace=True)
 
-    # ES: Mover 'chart_id' y 'source_file' al inicio del DataFrame.
-    # EN: Move 'chart_id' and 'source_file' to the front of the DataFrame.
-    front_cols = ["chart_id", "source_file", "difficulty"]
-    remaining = [c for c in df.columns if c not in front_cols]
-    df = df[front_cols + remaining]
-
-    # ES: Reemplazar Inf en stream_break_ratio por pd.NA (charts sin breaks).
-    # EN: Replace Inf in stream_break_ratio with pd.NA (charts with no breaks).
-    if "stream_break_ratio" in df.columns:
-        df["stream_break_ratio"] = df["stream_break_ratio"].apply(
-            lambda v: pd.NA if isinstance(v, float) and math.isinf(v) else v
-        )
-
-    # ES: Renombrar max_burst_ebpm → peak_ebpm para mayor claridad en el dataset.
-    # EN: Rename max_burst_ebpm → peak_ebpm for clarity in the dataset.
-    if "max_burst_ebpm" in df.columns:
-        df.rename(columns={"max_burst_ebpm": "peak_ebpm"}, inplace=True)
+    # ES: Reordenar columnas siguiendo la convención de la hoja de cálculo
+    #     comunitaria: identificación → velocidad → volumen de stream → ratio → densidad.
+    # EN: Reorder columns following the community spreadsheet convention:
+    #     identification → speed → stream volume → ratio → density.
+    ordered_cols = [
+        "chart_id",
+        "difficulty",
+        "source_file",
+        "display_bpm",
+        "ebpm",
+        "total_stream_length",
+        "max_stream_length",
+        "break_count",
+        "stream_break_ratio",
+        "average_nps",
+    ]
+    # ES: Incluir columnas extra no listadas explícitamente al final (futuro-compatible).
+    # EN: Append any unlisted extra columns at the end (future-compatible).
+    extra = [c for c in df.columns if c not in ordered_cols]
+    df = df[ordered_cols + extra]
 
     return df
 

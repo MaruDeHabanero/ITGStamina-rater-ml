@@ -228,8 +228,9 @@ def calculate_ebpm_profile(
 
     notes_per_measure = notes_data.get("notes_per_measure", [])
     display_bpm = notes_data.get("display_bpm")
+    timing_bpm = notes_data.get("timing_bpm") or display_bpm
 
-    if not display_bpm or display_bpm <= 0:
+    if not timing_bpm or timing_bpm <= 0:
         return {
             "display_bpm": display_bpm,
             "measure_seconds": None,
@@ -237,7 +238,7 @@ def calculate_ebpm_profile(
             "ebpm_per_measure": [None for _ in notes_per_measure],
         }
 
-    measure_seconds = 240.0 / display_bpm
+    measure_seconds = 240.0 / timing_bpm
     nps_per_measure = [count / measure_seconds for count in notes_per_measure]
     ebpm_per_measure = [nps * 15.0 for nps in nps_per_measure]
 
@@ -265,15 +266,21 @@ def calculate_breakdown_metrics(
     Returns:
         Diccionario/Dictionary con estadísticas agregadas: `total_stream_length`,
         `max_stream_length`, `break_count`, `stream_break_ratio`, `average_nps`,
-        y `ebpm` (BPM efectivo = Display BPM × multiplicador de subdivisión).
+        y `ebpm` (PeakNPS × 15, calculado con timing_bpm del #BPMS; si no hay
+        timing_bpm se usa display_bpm como fallback).
+
+        `stream_break_ratio` es 0.0 cuando el chart no tiene breaks (stream puro).
+        / `stream_break_ratio` is 0.0 when the chart has no breaks (pure stream).
     """
 
     if isinstance(notes_input, dict):
         notes_per_measure = notes_input.get("notes_per_measure", [])
         display_bpm = notes_input.get("display_bpm")
+        timing_bpm = notes_input.get("timing_bpm") or display_bpm
     else:
         notes_per_measure = notes_input
         display_bpm = None
+        timing_bpm = None
 
     sequences = get_stream_sequences(notes_per_measure, subdivision=subdivision)
 
@@ -282,36 +289,85 @@ def calculate_breakdown_metrics(
     max_stream_length = max((seg.get("scaled_length", seg["length"]) for seg in sequences if not seg["is_break"]), default=0)
     break_count = sum(1 for seg in sequences if seg["is_break"])
 
+    # ES: Ratio stream/break. 0.0 señala un chart sin breaks (stream puro),
+    #     lo cual es un valor ML-seguro y semánticamente claro.
+    # EN: Stream/break ratio. 0.0 signals a no-break chart (pure stream),
+    #     which is ML-safe and semantically unambiguous.
     stream_break_ratio = (
-        float(total_stream_length) / float(total_break_length) if total_break_length > 0 else float("inf")
+        round(float(total_stream_length) / float(total_break_length), 3)
+        if total_break_length > 0
+        else 0.0
     )
 
-    if display_bpm and display_bpm > 0:
-        measure_seconds = 240.0 / display_bpm
-        average_nps = mean(
-            [count / measure_seconds for count in notes_per_measure]
+    if timing_bpm and timing_bpm > 0:
+        measure_seconds = 240.0 / timing_bpm
+        average_nps = round(
+            mean([count / measure_seconds for count in notes_per_measure]),
+            2,
         ) if notes_per_measure else 0.0
     else:
-        average_nps = mean(notes_per_measure) if notes_per_measure else 0.0
+        average_nps = round(mean(notes_per_measure), 2) if notes_per_measure else 0.0
 
-    # ES: eBPM = Display BPM × multiplicador de subdivisión detectada.
-    #     Si el chart es 24ths (multiplier=1.5) a 150 BPM → eBPM = 225.
-    # EN: eBPM = Display BPM × detected subdivision multiplier.
-    #     If the chart is 24ths (multiplier=1.5) at 150 BPM → eBPM = 225.
+    # -------------------------------------------------------------------------
+    # PORTED LOGIC — eBPM via PeakNPS
+    # -------------------------------------------------------------------------
+    # ES: La lógica del eBPM es un porte directo de la función `GetMeasureInfo`
+    #     del tema Simply Love para StepMania 5.
+    #
+    #     En el original en Lua, la variable `peakNPS` se acumula compás a
+    #     compás y se actualiza cada vez que el NPS del compás actual la supera:
+    #
+    #       NPSForThisMeasure = notesInMeasure / durationOfMeasureInSeconds
+    #       if NPSForThisMeasure > peakNPS then
+    #           peakNPS = NPSForThisMeasure
+    #       end
+    #
+    #     Al final, el eBPM se calcula como:  eBPM = peakNPS × 15
+    #
+    #     Fuente original:
+    #       https://github.com/zarzob/Simply-Love-SM5/blob/
+    #       87b8e5db3452d54121d81554d720e498d20a18fc/Scripts/SL-ChartParser.lua#L288
+    #
+    #     En nuestra implementación la duración de cada compás se aproxima con
+    #     `timing_bpm` (moda de #BPMS), que equivale al BPM base real del
+    #     archivo .sm, tal como lo haría el engine de StepMania al leer el
+    #     timing data. Si `timing_bpm` no está disponible se usa `display_bpm`
+    #     como fallback.
+    #
+    #     Ejemplos de validación:
+    #       - Flaklypa (32nds a 130 BPM base) → timing=130, max_notes=32
+    #             PeakNPS = 32 / (240/130) ≈ 17.33 → eBPM = 260 ✓
+    #       - 16ths puro a 200 BPM → timing=200, max_notes=16
+    #             PeakNPS = 16 / (240/200) ≈ 13.33 → eBPM = 200 ✓
+    #
+    # EN: The eBPM logic is a direct Python port of the `GetMeasureInfo`
+    #     function from the Simply Love StepMania 5 theme.
+    #
+    #     In the original Lua, `peakNPS` is accumulated measure by measure and
+    #     updated whenever the current measure's NPS exceeds it:
+    #
+    #       NPSForThisMeasure = notesInMeasure / durationOfMeasureInSeconds
+    #       if NPSForThisMeasure > peakNPS then
+    #           peakNPS = NPSForThisMeasure
+    #       end
+    #
+    #     At the end, eBPM is computed as:  eBPM = peakNPS × 15
+    #
+    #     Original source:
+    #       https://github.com/zarzob/Simply-Love-SM5/blob/
+    #       87b8e5db3452d54121d81554d720e498d20a18fc/Scripts/SL-ChartParser.lua#L288
+    #
+    #     In our implementation the measure duration is approximated using
+    #     `timing_bpm` (mode of #BPMS), equivalent to the actual base BPM of
+    #     the .sm file, as the StepMania engine would read from timing data.
+    #     If `timing_bpm` is unavailable, `display_bpm` is used as fallback.
+    # -------------------------------------------------------------------------
     ebpm: Optional[float] = None
-    if display_bpm and display_bpm > 0 and sequences:
-        multiplier = sequences[0].get("multiplier", 1.0)
-        ebpm = display_bpm * multiplier
-
-    # ES: Detección de bursts dentro de breaks.
-    # EN: Burst detection within break segments.
-    notes_dict: NotesData = (
-        notes_input
-        if isinstance(notes_input, dict)
-        else {"notes_per_measure": notes_per_measure, "display_bpm": display_bpm}
-    )
-    bursts = detect_bursts(notes_dict, sequences)
-    burst_summary = summarize_bursts(bursts)
+    bpm_for_nps = timing_bpm or display_bpm
+    if bpm_for_nps and bpm_for_nps > 0 and notes_per_measure:
+        _ms = 240.0 / bpm_for_nps
+        peak_nps = max(count / _ms for count in notes_per_measure)
+        ebpm = round(peak_nps * 15.0, 1)
 
     return {
         "total_stream_length": total_stream_length,
@@ -320,7 +376,6 @@ def calculate_breakdown_metrics(
         "stream_break_ratio": stream_break_ratio,
         "average_nps": average_nps,
         "ebpm": ebpm,
-        **burst_summary,
     }
 
 
@@ -372,13 +427,14 @@ def detect_bursts(
 
     notes_per_measure = notes_data.get("notes_per_measure", [])
     display_bpm = notes_data.get("display_bpm")
+    timing_bpm = notes_data.get("timing_bpm") or display_bpm
 
-    if not display_bpm or display_bpm <= 0 or not sequences:
+    if not timing_bpm or timing_bpm <= 0 or not sequences:
         return []
 
-    # ES: Segundos por compás y NPS de stream continuo al BPM del chart.
-    # EN: Seconds per measure and full-stream NPS at the chart's BPM.
-    measure_seconds = 240.0 / display_bpm
+    # ES: Segundos por compás y NPS de stream continuo al timing BPM del chart.
+    # EN: Seconds per measure and full-stream NPS at the chart's timing BPM.
+    measure_seconds = 240.0 / timing_bpm
     full_stream_nps = STREAM_THRESHOLD / measure_seconds  # 16 notas en 1 compás
     burst_nps_threshold = full_stream_nps * nps_ratio
 

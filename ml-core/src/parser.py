@@ -8,12 +8,35 @@ from typing_extensions import TypedDict
 
 
 class NotesData(TypedDict):
-    """ES: Resultado del parseo de un .sm: BPM mostrado, block y notas por compás.
+    """ES: Resultado del parseo de un .sm.
 
-    EN: Parsed .sm result: display BPM, difficulty block, and per-measure note counts.
+    Campos:
+        display_bpm:  BPM extraído de #TITLE ([dificultad] [bpm] nombre).
+                      Es la velocidad de referencia que la comunidad utiliza
+                      para describir el chart.
+        timing_bpm:   BPM extraído de #BPMS (moda). Es el BPM base real del
+                      archivo, usado únicamente para calcular duración de
+                      compases y NPS. Puede diferir de display_bpm en charts
+                      de 24ths o 32nds donde el engine corre a un BPM base
+                      distinto al eBPM percibido.
+        block:        Dificultad numérica del chart (variable objetivo).
+        notes_per_measure: Notas por compás del chart seleccionado.
+
+    EN: Parsed .sm result.
+
+    Fields:
+        display_bpm:  BPM from #TITLE ([difficulty] [bpm] name).
+                      The community-facing speed reference for the chart.
+        timing_bpm:   BPM from #BPMS (mode). The actual base BPM of the file,
+                      used only to compute measure durations and NPS. May differ
+                      from display_bpm for 24th/32nd charts where the engine
+                      runs at a different base BPM than the perceived eBPM.
+        block:        Numeric difficulty label (classification target).
+        notes_per_measure: Per-measure note counts for the selected chart.
     """
 
     display_bpm: Optional[float]
+    timing_bpm: Optional[float]
     block: int
     notes_per_measure: List[int]
 
@@ -89,27 +112,19 @@ def _extract_tag_payload(lines: Sequence[str], tag: str) -> Optional[str]:
     return None
 
 
-def _parse_display_bpm(payload: Optional[str]) -> Optional[float]:
-    """ES: Convierte el payload de #DISPLAYBPM a un float si es posible.
+# ES: Subdivisiones válidas en charts de stamina ITG.
+#     16 = 16ths (estándar), 20 = 20ths (rara), 24 = 24ths (popular),
+#     32 = 32nds (muy rara, equivale a 2× el BPM).
+# EN: Valid subdivisions in ITG stamina charts.
+#     16 = 16ths (standard), 20 = 20ths (rare), 24 = 24ths (popular),
+#     32 = 32nds (very rare, effectively 2× the BPM).
+_VALID_SUBDIVISIONS = [16, 20, 24, 32]
 
-    EN: Convert a #DISPLAYBPM payload to float when possible.
-    """
-
-    if not payload:
-        return None
-
-    normalized = payload.strip()
-    if normalized in {"*", "0", "0.0", "0.000"}:
-        return None
-
-    match = re.search(r"[-+]?\d*\.?\d+", normalized)
-    if not match:
-        return None
-
-    try:
-        return float(match.group(0))
-    except ValueError:
-        return None
+# ES: Regex para extraer BPM del #TITLE: [dificultad] [bpm] nombre
+#     Ejemplo: "[42] [465] Nocturnal 2097" → grupo 1 = "465"
+# EN: Regex to extract BPM from #TITLE: [difficulty] [bpm] name
+#     Example: "[42] [465] Nocturnal 2097" → group 1 = "465"
+_TITLE_BPM_RE = re.compile(r"\[\d+\]\s*\[(\d+(?:\.\d+)?)\]")
 
 
 def _parse_bpms(payload: Optional[str]) -> List[float]:
@@ -124,37 +139,90 @@ def _parse_bpms(payload: Optional[str]) -> List[float]:
     bpms: List[float] = []
     for part in payload.split(","):
         entry = part.strip()
-        if not entry:
-            continue
-        if "=" not in entry:
+        if not entry or "=" not in entry:
             continue
         _, bpm_text = entry.split("=", 1)
         try:
-            bpms.append(float(bpm_text))
+            bpms.append(float(bpm_text.strip()))
         except ValueError:
             continue
     return bpms
 
 
-def _select_display_bpm(lines: Sequence[str]) -> Optional[float]:
-    """ES: Determina el Display BPM usando #DISPLAYBPM o la moda de #BPMS.
+def _extract_timing_bpm(lines: Sequence[str]) -> Optional[float]:
+    """ES: Extrae el BPM de timing (base) desde el tag #BPMS usando su moda.
 
-    EN: Determine Display BPM using #DISPLAYBPM or the mode of #BPMS entries.
+    Este BPM es el que el engine de StepMania usa para medir la duración real
+    de los compases. Se usa únicamente para cálculos internos de NPS/eBPM,
+    y nunca se expone como velocidad del chart al usuario.
+
+    En charts con subdivisión no estándar (ej. 32nds) el timing_bpm será
+    distinto al display_bpm (ej. Flaklypa: timing=130, display=260).
+
+    EN: Extract the base timing BPM from #BPMS using its mode.
+
+    This BPM is what the StepMania engine uses to measure actual measure
+    durations. Used only for internal NPS/eBPM calculations and never
+    exposed as the chart speed to the user.
+
+    For non-standard subdivision charts (e.g. 32nds) timing_bpm will differ
+    from display_bpm (e.g. Flaklypa: timing=130, display=260).
+
+    Args:
+        lines: Líneas limpias del archivo .sm. / Clean lines from the .sm file.
+
+    Returns:
+        Moda de los BPMs en #BPMS como float, o None si no hay datos.
+        / Mode of #BPMS entries as float, or None if unavailable.
     """
-
-    display_payload = _extract_tag_payload(lines, "#DISPLAYBPM")
-    display_bpm = _parse_display_bpm(display_payload)
-    if display_bpm is not None:
-        return display_bpm
 
     bpm_payload = _extract_tag_payload(lines, "#BPMS")
     bpms = _parse_bpms(bpm_payload)
     if not bpms:
         return None
+    rounded = [round(b, 3) for b in bpms]
+    return float(Counter(rounded).most_common(1)[0][0])
 
-    rounded = [round(bpm, 3) for bpm in bpms]
-    most_common = Counter(rounded).most_common(1)[0][0]
-    return float(most_common)
+
+def _extract_title_bpm(lines: Sequence[str]) -> Optional[float]:
+    """ES: Extrae el BPM del tag #TITLE con formato [dificultad] [bpm] nombre.
+
+    En packs de stamina ITG, el #TITLE codifica tanto la dificultad como el BPM
+    de referencia del chart (el eBPM percibido por la comunidad). Este valor
+    es la fuente autoritativa de velocidad y puede diferir del timing_bpm
+    (#BPMS) en charts con subdivisiones no estándar (24ths, 32nds).
+
+    EN: Extract BPM from the #TITLE tag with format [difficulty] [bpm] name.
+
+    In ITG stamina packs, #TITLE encodes both the difficulty and the reference
+    BPM of the chart (the community-perceived eBPM). This value is the
+    authoritative speed reference and may differ from timing_bpm (#BPMS) for
+    charts with non-standard subdivisions (24ths, 32nds).
+
+    Example:
+        #TITLE:[42] [465] Nocturnal 2097;  →  465.0
+        #TITLE:[21] [260] Flaklypa;         →  260.0 (base BPM 130, 32nds)
+
+    Args:
+        lines: Líneas limpias del archivo .sm. / Clean lines from the .sm file.
+
+    Returns:
+        BPM como float, o None si el patrón no se encuentra.
+        / BPM as float, or None if the pattern is not found.
+    """
+
+    title_payload = _extract_tag_payload(lines, "#TITLE")
+    if not title_payload:
+        return None
+
+    match = _TITLE_BPM_RE.search(title_payload)
+    if not match:
+        return None
+
+    try:
+        return float(match.group(1))
+    except ValueError:
+        return None
 
 
 def _extract_charts(lines: Sequence[str]) -> List[dict]:
@@ -306,16 +374,41 @@ def _count_notes_and_rows(measures: Sequence[Sequence[str]]) -> Tuple[List[int],
     return densities, row_counts
 
 
-def _infer_subdivision(row_counts: Sequence[int]) -> int:
-    """ES: Infere la subdivisión base (16ths, 24ths, etc.) usando la moda de filas.
+def _infer_subdivision(notes_per_measure: List[int]) -> int:
+    """ES: Infiere la subdivisión real del chart a partir de la densidad de notas.
 
-    EN: Infer base subdivision (e.g., 16ths, 24ths) using the mode of row counts.
+    Solo se consideran las subdivisiones válidas en stamina ITG: 16, 20, 24, 32.
+    Se calcula la moda de notas por compás en compases de stream (≥ 12 notas,
+    umbral holgado para captar incluso medidas parciales de stream) y se mapea
+    a la subdivisión válida más cercana.
+
+    EN: Infer the actual chart subdivision from note density.
+
+    Only valid ITG stamina subdivisions are considered: 16, 20, 24, 32.
+    The mode of notes-per-measure in stream-like measures (≥ 12 notes, a lenient
+    threshold to catch even partial stream measures) is snapped to the nearest
+    valid subdivision.
+
+    Args:
+        notes_per_measure: Conteo de notas por compás del parser.
+                           / Per-measure note counts from the parser.
+
+    Returns:
+        Subdivisión válida más cercana (16, 20, 24 o 32).
+        / Nearest valid subdivision (16, 20, 24 or 32).
     """
 
-    non_zero = [c for c in row_counts if c > 0]
-    if not non_zero:
+    # ES: Filtrar compases con al menos 12 notas (stream o cercano a stream).
+    # EN: Filter measures with at least 12 notes (stream or near-stream).
+    stream_counts = [n for n in notes_per_measure if n >= 12]
+    if not stream_counts:
         return 16
-    return Counter(non_zero).most_common(1)[0][0]
+
+    mode_count = Counter(stream_counts).most_common(1)[0][0]
+
+    # ES: Mapear al valor válido más cercano: 16, 20, 24 o 32.
+    # EN: Snap to the nearest valid value: 16, 20, 24 or 32.
+    return min(_VALID_SUBDIVISIONS, key=lambda s: abs(s - mode_count))
 
 
 def parse_sm_chart_with_meta(file_path: Path) -> Tuple[NotesData, int]:
@@ -341,15 +434,17 @@ def parse_sm_chart_with_meta(file_path: Path) -> Tuple[NotesData, int]:
     """
 
     lines = _load_clean_lines(file_path)
-    display_bpm = _select_display_bpm(lines)
+    title_bpm = _extract_title_bpm(lines)
+    timing_bpm = _extract_timing_bpm(lines)
     charts = _extract_charts(lines)
     chart = _select_hardest_chart(charts)
 
     measures = _prepare_measures(chart["note_lines"])
-    densities, row_counts = _count_notes_and_rows(measures)
-    subdivision = _infer_subdivision(row_counts)
+    densities, _row_counts = _count_notes_and_rows(measures)
+    subdivision = _infer_subdivision(densities)
     notes_data: NotesData = {
-        "display_bpm": display_bpm,
+        "display_bpm": title_bpm,
+        "timing_bpm": timing_bpm,
         "block": chart["block"],
         "notes_per_measure": densities,
     }
