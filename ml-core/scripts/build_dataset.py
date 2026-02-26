@@ -42,7 +42,7 @@ _SRC_PATH = _ML_CORE_ROOT / "src"
 if str(_SRC_PATH) not in sys.path:
     sys.path.insert(0, str(_SRC_PATH))
 
-from features import calculate_breakdown_metrics  # noqa: E402
+from features import calculate_breakdown_metrics, generate_breakdown_string  # noqa: E402
 from parser import parse_sm_chart_with_meta  # noqa: E402
 
 # ---------------------------------------------------------------------------
@@ -51,6 +51,14 @@ from parser import parse_sm_chart_with_meta  # noqa: E402
 # ---------------------------------------------------------------------------
 RAW_DIR: Path = _ML_CORE_ROOT / "data" / "raw"
 OUTPUT_PATH: Path = _ML_CORE_ROOT / "data" / "processed" / "stamina_dataset.csv"
+
+# ES: Umbral mínimo de medidas de stream para considerar un chart válido.
+#     Charts por debajo de este valor son descartados como errores de parseo
+#     (subdivisión mal detectada por bursts o notas especiales).
+# EN: Minimum stream measure count to consider a chart valid.
+#     Charts below this threshold are discarded as parse errors
+#     (subdivision misdetected due to bursts or special notes).
+MIN_STREAM_LENGTH: int = 4
 
 logging.basicConfig(
     level=logging.INFO,
@@ -110,10 +118,10 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
                  / Raw data root (used to derive the relative path in source_file).
 
     Returns:
-        Diccionario con todas las características más `difficulty`, `source_file`
-        y `_notes_hash`, o None si el archivo no pudo parsearse.
-        / Dict with all features plus `difficulty`, `source_file`, and `_notes_hash`,
-        or None if the file could not be parsed.
+        Diccionario con todas las características más `difficulty`, `breakdown`,
+        `source_file` y `_notes_hash`, o None si el archivo no pudo parsearse.
+        / Dict with all features plus `difficulty`, `breakdown`, `source_file`,
+        and `_notes_hash`, or None if the file could not be parsed.
     """
 
     try:
@@ -128,6 +136,9 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
 
     try:
         metrics = calculate_breakdown_metrics(notes_data, subdivision=subdivision)
+        # ES: El breakdown es la representación canónica del chart, clave para la tesis.
+        # EN: The breakdown is the canonical chart representation, key for the thesis.
+        breakdown = generate_breakdown_string(notes_per_measure, subdivision=subdivision)
     except Exception as exc:
         logger.error("Feature extraction failed for '%s': %s", file_path, exc)
         return None
@@ -143,6 +154,7 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
 
     record: Dict = {
         "difficulty": difficulty,
+        "breakdown": breakdown,
         "source_file": rel_path,
         "display_bpm": display_bpm,
         "_notes_hash": notes_hash,
@@ -240,6 +252,26 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     df["chart_id"] = df["_notes_hash"].str[:8]
     df.drop(columns=["_notes_hash"], inplace=True)
 
+    # ES: Filtro de control de calidad: descartar charts con stream total menor al
+    #     umbral mínimo. Esto elimina registros donde la subdivisión fue mal detectada
+    #     (p.ej. charts con bursts o notas especiales que confunden al parser).
+    #     Este paso es metodológicamente justificable en la tesis como QA de datos.
+    # EN: Quality control filter: discard charts whose total stream length is below
+    #     the minimum threshold. This removes records where subdivision was
+    #     misdetected (e.g. charts with bursts or special notes that confuse the
+    #     parser). This step is methodologically justifiable as data QA.
+    before_filter = len(df)
+    df = df[df["total_stream_length"] > MIN_STREAM_LENGTH].reset_index(drop=True)
+    filtered_out = before_filter - len(df)
+    if filtered_out > 0:
+        logger.warning(
+            "Quality filter removed %d charts with total_stream_length < %d "
+            "(likely subdivision misdetection). %d charts remain.",
+            filtered_out,
+            MIN_STREAM_LENGTH,
+            len(df),
+        )
+
     # ES: Reordenar columnas siguiendo la convención de la hoja de cálculo
     #     comunitaria: identificación → velocidad → volumen de stream → ratio → densidad.
     # EN: Reorder columns following the community spreadsheet convention:
@@ -247,6 +279,7 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     ordered_cols = [
         "chart_id",
         "difficulty",
+        "breakdown",
         "source_file",
         "display_bpm",
         "ebpm",
