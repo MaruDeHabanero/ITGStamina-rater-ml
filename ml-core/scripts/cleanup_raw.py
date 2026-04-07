@@ -74,10 +74,13 @@ def write_report(
     report_path: Path,
     *,
     raw_root: Path,
+    dry_run: bool,
+    deleted_applied: bool,
     total_before: int,
     total_after: int,
     bytes_before: int,
     bytes_after: int,
+    marked_files: List[Path],
     deleted_files: List[Path],
 ) -> None:
     """
@@ -86,24 +89,39 @@ def write_report(
     """
 
     report_path.parent.mkdir(parents=True, exist_ok=True)
+    relative_marked = [f.relative_to(raw_root) for f in marked_files]
     relative_deleted = [f.relative_to(raw_root) for f in deleted_files]
 
     lines = [
         f"Raw root: {raw_root}",
+        f"Dry run: {dry_run}",
+        f"Deletion applied: {deleted_applied}",
         f"Space before deletion: {format_size(bytes_before)} ({bytes_before} bytes)",
         f"Space after deletion: {format_size(bytes_after)} ({bytes_after} bytes)",
         f"Total files before deletion: {total_before}",
+        f"Files marked for deletion: {len(marked_files)}",
         f"Files deleted: {len(deleted_files)}",
         f"Total files after deletion: {total_after}",
-        "Deleted files:",
+        "Marked files:",
     ]
+
+    if relative_marked:
+        lines.extend(str(path) for path in relative_marked)
+    else:
+        lines.append("(none)")
+
+    lines.extend(
+        [
+        "Deleted files:",
+        ]
+    )
 
     if relative_deleted:
         lines.extend(str(path) for path in relative_deleted)
     else:
         lines.append("(none)")
 
-    report_path.write_text("\n".join(lines))
+    report_path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -138,7 +156,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--report-path",
         type=Path,
-        default=Path(__file__).resolve().parent.parent / "data" / "raw" / "cleanup_report.txt",
+        default=Path(__file__).resolve().parent.parent / "data" / "processed" / "cleanup_report.txt",
         help=(
             "English: Where to write the cleanup report. "
             "Español: Ruta donde se guardará el informe de limpieza."
@@ -156,11 +174,25 @@ def main() -> None:
     args = parse_args()
     raw_root: Path = args.raw_root
     report_path: Path = args.report_path
+    total_before, bytes_before = collect_file_stats(raw_root)
 
     extra_files = list_extra_files(raw_root)
 
     if not extra_files:
         print("No extra files found. Nothing to delete.")
+        write_report(
+            report_path,
+            raw_root=raw_root,
+            dry_run=args.dry_run,
+            deleted_applied=False,
+            total_before=total_before,
+            total_after=total_before,
+            bytes_before=bytes_before,
+            bytes_after=bytes_before,
+            marked_files=[],
+            deleted_files=[],
+        )
+        print(f"Report saved to {report_path}.")
         return
 
     print("Files marked for deletion:")
@@ -169,19 +201,34 @@ def main() -> None:
 
     if args.dry_run:
         print("Dry run enabled. No files were deleted.")
+        write_report(
+            report_path,
+            raw_root=raw_root,
+            dry_run=True,
+            deleted_applied=False,
+            total_before=total_before,
+            total_after=total_before,
+            bytes_before=bytes_before,
+            bytes_after=bytes_before,
+            marked_files=extra_files,
+            deleted_files=[],
+        )
+        print(f"Report saved to {report_path}.")
         return
 
-    total_before, bytes_before = collect_file_stats(raw_root)
     delete_files(extra_files)
     total_after, bytes_after = collect_file_stats(raw_root)
 
     write_report(
         report_path,
         raw_root=raw_root,
+        dry_run=False,
+        deleted_applied=True,
         total_before=total_before,
         total_after=total_after,
         bytes_before=bytes_before,
         bytes_after=bytes_after,
+        marked_files=extra_files,
         deleted_files=extra_files,
     )
 

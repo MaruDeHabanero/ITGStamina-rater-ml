@@ -9,7 +9,7 @@ import argparse
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import List, Optional
 
 
 # Banners que identifican charts de tech/no-stamina en los packs "- Unlocks".
@@ -107,27 +107,51 @@ def human_size(nbytes: int) -> str:
     return f"{nbytes} B"
 
 
-def delete_candidates(candidates: Iterable[ChartCandidate], apply: bool) -> None:
-    """ES: Borra (o simula) carpetas de charts tech. EN: Delete/simulate."""
+def delete_candidates(candidates: List[ChartCandidate], apply: bool) -> List[str]:
+    """
+    ES: Borra (o simula) carpetas de charts tech y devuelve lineas de reporte.
+    EN: Delete/simulate tech chart folders and return report lines.
+    """
 
     total_bytes = sum(c.size_bytes for c in candidates)
+    report_lines: List[str] = [
+        "= Unlocks tech cleanup =",
+        f"Charts marcados (tech): {len(candidates)}",
+        f"Espacio estimado: {human_size(total_bytes)}",
+        f"Dry run: {not apply}",
+    ]
+
     print("= Unlocks tech cleanup =")
-    print(f"Charts marcados (tech): {len(list(candidates))}")
+    print(f"Charts marcados (tech): {len(candidates)}")
     print(f"Espacio estimado: {human_size(total_bytes)}")
 
     for cand in candidates:
         rel = cand.folder
-        print(f"- {rel} | banner={cand.banner} | size={human_size(cand.size_bytes)}")
+        line = f"- {rel} | banner={cand.banner} | size={human_size(cand.size_bytes)}"
+        print(line)
+        report_lines.append(line)
         if apply:
             try:
                 shutil.rmtree(cand.folder)
             except OSError as exc:
                 print(f"  ! No se pudo borrar {rel}: {exc}")
+                report_lines.append(f"  ! No se pudo borrar {rel}: {exc}")
 
     if apply:
         print("Borrado completado.")
+        report_lines.append("Borrado completado.")
     else:
         print("Dry-run: no se borró nada.")
+        report_lines.append("Dry-run: no se borro nada.")
+
+    return report_lines
+
+
+def write_report(report_path: Path, lines: List[str]) -> None:
+    """ES: Escribe reporte TXT. EN: Persist TXT report."""
+
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main() -> None:
@@ -145,11 +169,19 @@ def main() -> None:
         action="store_true",
         help="Do not delete anything; just list candidates",
     )
+    parser.add_argument(
+        "--report-path",
+        type=Path,
+        default=Path(__file__).resolve().parents[1] / "data" / "processed" / "remove_tech_report.txt",
+        help="Where to save the TXT report (default: data/processed/remove_tech_report.txt)",
+    )
 
     args = parser.parse_args()
 
     candidates = find_tech_candidates(args.root)
-    delete_candidates(candidates, apply=not args.dry_run)
+    report_lines = delete_candidates(candidates, apply=not args.dry_run)
+    write_report(args.report_path, report_lines)
+    print(f"Reporte guardado en: {args.report_path}")
 
 
 if __name__ == "__main__":

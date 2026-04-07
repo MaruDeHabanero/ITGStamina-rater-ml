@@ -26,6 +26,8 @@ import argparse
 import hashlib
 import logging
 import sys
+from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -68,6 +70,37 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class BuildRunReport:
+    """
+    English: In-memory report container for one dataset build execution.
+    Espanol: Contenedor de reporte en memoria para una ejecucion de build.
+    """
+
+    started_at: str
+    total_files: int = 0
+    parsed_ok: int = 0
+    unique_before_filter: int = 0
+    unique_after_filter: int = 0
+    duplicates_overwritten: int = 0
+    parse_failures: List[str] = field(default_factory=list)
+    feature_failures: List[str] = field(default_factory=list)
+    quality_filtered: List[str] = field(default_factory=list)
+    duplicate_details: List[str] = field(default_factory=list)
+
+
+def _safe_relative(path: Path, root: Path) -> str:
+    """
+    English: Return path relative to root when possible, otherwise absolute string.
+    Espanol: Devuelve la ruta relativa a root cuando es posible, o absoluta.
+    """
+
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
 def _md5_of_notes(notes_per_measure: List[int]) -> str:
     """
     English: Compute the MD5 hex-digest of a note density list.
@@ -94,7 +127,11 @@ def _md5_of_notes(notes_per_measure: List[int]) -> str:
     return hashlib.md5(raw).hexdigest()
 
 
-def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
+def process_file(
+    file_path: Path,
+    raw_dir: Path,
+    run_report: Optional[BuildRunReport] = None,
+) -> Optional[Dict]:
     """
     English: Parse one .sm file and return a flat feature record, or None on error.
 
@@ -124,10 +161,14 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
         and `_notes_hash`, or None if the file could not be parsed.
     """
 
+    rel_path = _safe_relative(file_path, raw_dir)
+
     try:
         notes_data, subdivision = parse_sm_chart_with_meta(file_path)
     except Exception as exc:
         logger.error("Failed to parse '%s': %s", file_path, exc)
+        if run_report is not None:
+            run_report.parse_failures.append(f"{rel_path} | {exc}")
         return None
 
     notes_per_measure: List[int] = notes_data["notes_per_measure"]
@@ -141,14 +182,9 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
         breakdown = generate_breakdown_string(notes_per_measure, subdivision=subdivision)
     except Exception as exc:
         logger.error("Feature extraction failed for '%s': %s", file_path, exc)
+        if run_report is not None:
+            run_report.feature_failures.append(f"{rel_path} | {exc}")
         return None
-
-    # ES: Determinar la ruta relativa respecto a raw_dir para trazabilidad.
-    # EN: Compute relative path from raw_dir for traceability.
-    try:
-        rel_path = str(file_path.relative_to(raw_dir))
-    except ValueError:
-        rel_path = str(file_path)
 
     notes_hash = _md5_of_notes(notes_per_measure)
 
@@ -163,7 +199,7 @@ def process_file(file_path: Path, raw_dir: Path) -> Optional[Dict]:
     return record
 
 
-def build_dataset(raw_dir: Path) -> pd.DataFrame:
+def build_dataset(raw_dir: Path, run_report: Optional[BuildRunReport] = None) -> pd.DataFrame:
     """
     English: Traverse raw_dir recursively, parse every .sm file, deduplicate by
     MD5, and return a clean DataFrame of features.
@@ -212,6 +248,8 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     sm_files: List[Path] = sorted(raw_dir.rglob("*.sm"), key=lambda p: str(p))
     total_files = len(sm_files)
     logger.info("Found %d .sm files in '%s'", total_files, raw_dir)
+    if run_report is not None:
+        run_report.total_files = total_files
 
     # ES: Dict con hash MD5 como clave; re-rateos sobreescriben entradas antiguas.
     # EN: Dict keyed by MD5 hash; re-rates overwrite older entries.
@@ -219,15 +257,26 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     duplicates_overwritten = 0
 
     for file_path in tqdm(sm_files, desc="Processing charts", unit="chart"):
-        record = process_file(file_path, raw_dir)
+        record = process_file(file_path, raw_dir, run_report=run_report)
         if record is None:
             continue
+
+        if run_report is not None:
+            run_report.parsed_ok += 1
 
         notes_hash: str = record["_notes_hash"]
         if notes_hash in chart_by_hash:
             duplicates_overwritten += 1
+            if run_report is not None:
+                prev = chart_by_hash[notes_hash]["source_file"]
+                curr = record["source_file"]
+                run_report.duplicate_details.append(f"{notes_hash[:8]} | replaced: {prev} -> {curr}")
 
         chart_by_hash[notes_hash] = record
+
+    if run_report is not None:
+        run_report.duplicates_overwritten = duplicates_overwritten
+        run_report.unique_before_filter = len(chart_by_hash)
 
     logger.info(
         "Parsed %d/%d files — %d unique charts (%d duplicates overwritten)",
@@ -239,6 +288,8 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
 
     if not chart_by_hash:
         logger.warning("No charts were successfully parsed. DataFrame will be empty.")
+        if run_report is not None:
+            run_report.unique_after_filter = 0
         return pd.DataFrame()
 
     df = pd.DataFrame(list(chart_by_hash.values()))
@@ -261,6 +312,18 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     #     misdetected (e.g. charts with bursts or special notes that confuse the
     #     parser). This step is methodologically justifiable as data QA.
     before_filter = len(df)
+    if run_report is not None:
+        filtered_df = df[df["total_stream_length"] <= MIN_STREAM_LENGTH]
+        for _, row in filtered_df.iterrows():
+            run_report.quality_filtered.append(
+                "{source} | total_stream_length={length} | difficulty={difficulty} | breakdown={breakdown}".format(
+                    source=row["source_file"],
+                    length=int(row["total_stream_length"]),
+                    difficulty=int(row["difficulty"]),
+                    breakdown=row["breakdown"],
+                )
+            )
+
     df = df[df["total_stream_length"] > MIN_STREAM_LENGTH].reset_index(drop=True)
     filtered_out = before_filter - len(df)
     if filtered_out > 0:
@@ -271,6 +334,8 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
             MIN_STREAM_LENGTH,
             len(df),
         )
+    if run_report is not None:
+        run_report.unique_after_filter = len(df)
 
     # ES: Reordenar columnas siguiendo la convención de la hoja de cálculo
     #     comunitaria: identificación → velocidad → volumen de stream → ratio → densidad.
@@ -295,6 +360,64 @@ def build_dataset(raw_dir: Path) -> pd.DataFrame:
     df = df[ordered_cols + extra]
 
     return df
+
+
+def _write_text_report(path: Path, lines: List[str]) -> None:
+    """
+    English: Persist plain-text report lines to disk.
+    Espanol: Guarda lineas de reporte de texto plano en disco.
+    """
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_build_reports(
+    report_dir: Path,
+    run_report: BuildRunReport,
+    *,
+    raw_dir: Path,
+    output_path: Path,
+) -> None:
+    """
+    English: Write detailed TXT reports for one dataset build execution.
+    Espanol: Escribe reportes TXT detallados de una ejecucion de build_dataset.
+    """
+
+    report_dir.mkdir(parents=True, exist_ok=True)
+
+    summary_lines = [
+        f"Started at: {run_report.started_at}",
+        f"Raw directory: {raw_dir}",
+        f"Output CSV: {output_path}",
+        f"Total .sm files found: {run_report.total_files}",
+        f"Parsed successfully: {run_report.parsed_ok}",
+        f"Parse failures: {len(run_report.parse_failures)}",
+        f"Feature failures: {len(run_report.feature_failures)}",
+        f"Duplicates overwritten: {run_report.duplicates_overwritten}",
+        f"Unique charts before quality filter: {run_report.unique_before_filter}",
+        f"Quality-filtered charts: {len(run_report.quality_filtered)}",
+        f"Unique charts after quality filter: {run_report.unique_after_filter}",
+    ]
+    _write_text_report(report_dir / "build_dataset_summary.txt", summary_lines)
+
+    parse_lines = ["Parse failures:"]
+    parse_lines.extend(run_report.parse_failures or ["(none)"])
+    _write_text_report(report_dir / "parse_failures.txt", parse_lines)
+
+    feature_lines = ["Feature extraction failures:"]
+    feature_lines.extend(run_report.feature_failures or ["(none)"])
+    _write_text_report(report_dir / "feature_failures.txt", feature_lines)
+
+    quality_lines = [
+        "Charts removed by quality filter (total_stream_length <= MIN_STREAM_LENGTH):"
+    ]
+    quality_lines.extend(run_report.quality_filtered or ["(none)"])
+    _write_text_report(report_dir / "quality_filtered.txt", quality_lines)
+
+    duplicate_lines = ["Duplicate hash overwrites (old -> new):"]
+    duplicate_lines.extend(run_report.duplicate_details or ["(none)"])
+    _write_text_report(report_dir / "duplicate_overwrites.txt", duplicate_lines)
 
 
 def parse_args() -> argparse.Namespace:
@@ -322,6 +445,20 @@ def parse_args() -> argparse.Namespace:
         default=OUTPUT_PATH,
         help=f"Destination CSV path (default: {OUTPUT_PATH})",
     )
+    parser.add_argument(
+        "--report-dir",
+        type=Path,
+        default=OUTPUT_PATH.parent,
+        help=(
+            "Directory where TXT reports are written "
+            f"(default: {OUTPUT_PATH.parent})"
+        ),
+    )
+    parser.add_argument(
+        "--skip-reports",
+        action="store_true",
+        help="Do not export TXT reports.",
+    )
     return parser.parse_args()
 
 
@@ -334,12 +471,17 @@ def main() -> None:
     args = parse_args()
     raw_dir: Path = args.raw_dir
     output_path: Path = args.output
+    report_dir: Path = args.report_dir
+    run_report = BuildRunReport(started_at=datetime.now().isoformat(timespec="seconds"))
 
     logger.info("Starting dataset build from '%s'", raw_dir)
 
-    df = build_dataset(raw_dir)
+    df = build_dataset(raw_dir, run_report=run_report)
 
     if df.empty:
+        if not args.skip_reports:
+            write_build_reports(report_dir, run_report, raw_dir=raw_dir, output_path=output_path)
+            logger.info("TXT reports exported to '%s'", report_dir)
         logger.error("Dataset is empty; nothing saved.")
         sys.exit(1)
 
@@ -347,6 +489,10 @@ def main() -> None:
     # EN: Create the output directory if it does not exist.
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False)
+
+    if not args.skip_reports:
+        write_build_reports(report_dir, run_report, raw_dir=raw_dir, output_path=output_path)
+        logger.info("TXT reports exported to '%s'", report_dir)
 
     logger.info(
         "Dataset saved → '%s'  (%d rows x %d columns)",
