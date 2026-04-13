@@ -1,0 +1,2 @@
+Observed mean delta (v2-v1),95% CI low,95% CI high,Permutation p-value (two-sided),v2 improves (%),v1 improves (%),tie (%),n_samples,bootstrap_iter,permutation_iter
+0.07959745733695951,0.07428673864365742,0.0850364309107446,0.0,24.85974754558205,75.14025245441796,0.0,2852,5000,5000
