@@ -2,6 +2,7 @@
 .DS_Store
 Thumbs.db
 .vscode/
+env_files/
 
 # === PYTHON (ml-core) ===
 ml-core/venv/
